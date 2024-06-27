@@ -1,2 +1,2 @@
 # Kabi
-A table pet named Kabi based on Qt
+- 可实现一键搭载高性能RPC服务器
