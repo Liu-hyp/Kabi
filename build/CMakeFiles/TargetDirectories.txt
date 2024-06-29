@@ -1,0 +1,8 @@
+/mnt/hgfs/Share/Kabi/build/CMakeFiles/Kabi.dir
+/mnt/hgfs/Share/Kabi/build/CMakeFiles/edit_cache.dir
+/mnt/hgfs/Share/Kabi/build/CMakeFiles/rebuild_cache.dir
+/mnt/hgfs/Share/Kabi/build/kabisrc/CMakeFiles/edit_cache.dir
+/mnt/hgfs/Share/Kabi/build/kabisrc/CMakeFiles/rebuild_cache.dir
+/mnt/hgfs/Share/Kabi/build/kabisrc/common/CMakeFiles/common.dir
+/mnt/hgfs/Share/Kabi/build/kabisrc/common/CMakeFiles/edit_cache.dir
+/mnt/hgfs/Share/Kabi/build/kabisrc/common/CMakeFiles/rebuild_cache.dir

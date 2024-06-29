@@ -1,5 +1,4 @@
-#include "kabi/common/util.h"
-using namespace kabi;
+#include "util.h"
 
 namespace kabi{
 static int g_pid = 0;

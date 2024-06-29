@@ -9,9 +9,34 @@
 #include <sys/time.h>
 #include <mutex>
 
-#include "kabi/common/config.h"
-#include "kabi/common/util.h"
-#include "kabi/common/mutex.h"
+#include "config.h"
+#include "util.h"
+#include "mutex.h"
+
+
+#define DEBUGLOG(str, ...)\
+    if(kabi::logger::get_global_logger()->get_log_level() <= kabi::LOGLEVEL::DEBUG) \
+    {\
+        kabi::logger::get_global_logger()->push_log((new kabi::logEvent(kabi::LOGLEVEL::DEBUG))->to_string() \
+        + "[" + std::string(__FILE__) + ":" + std::to_string(__LINE__) + "]\t" + kabi::format_string(str, ##__VA_ARGS__) + "\n"); \
+        kabi::logger::get_global_logger()->log(); \
+    }\
+
+#define INFOLOG(str, ...)\
+if(kabi::logger::get_global_logger()->get_log_level() <= kabi::LOGLEVEL::INFO) \
+{\
+    kabi::logger::get_global_logger()->push_log((new kabi::logEvent(kabi::LOGLEVEL::INFO))->to_string() \
+    + "[" + std::string(__FILE__) + ":" + std::to_string(__LINE__) + "]\t" + kabi::format_string(str, ##__VA_ARGS__) + "\n"); \
+    kabi::logger::get_global_logger()->log(); \
+}\
+
+#define ERRORLOG(str, ...)\
+if(kabi::logger::get_global_logger()->get_log_level() <= kabi::LOGLEVEL::ERROR) \
+{\
+    kabi::logger::get_global_logger()->push_log((new kabi::logEvent(kabi::LOGLEVEL::ERROR))->to_string() \
+    + "[" + std::string(__FILE__) + ":" + std::to_string(__LINE__) + "]\t" + kabi::format_string(str, ##__VA_ARGS__) + "\n"); \
+    kabi::logger::get_global_logger()->log(); \
+}\
 
 namespace kabi{
 template<typename... Args>
@@ -26,6 +51,8 @@ std::string format_string(const char* str, Args&&... args)
     }
     return result;
 }
+
+
 
 enum class LOGLEVEL
 {

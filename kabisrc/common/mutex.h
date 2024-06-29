@@ -12,7 +12,7 @@ public:
         m_mutex.lock();
         m_is_lock = true;
     }
-    ~scope_mutext(T& mutex)
+    ~scope_mutext()
     {
         m_mutex.unlock();
         m_is_lock = false;
@@ -35,7 +35,7 @@ public:
     }
 private:
     T& m_mutex;
-    bool m_is_lock(false);
+    bool m_is_lock{false};
 };
 class mutex
 {

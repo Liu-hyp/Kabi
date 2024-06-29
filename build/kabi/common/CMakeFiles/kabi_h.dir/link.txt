@@ -1,0 +1,2 @@
+/usr/bin/ar qc libkabi_h.a CMakeFiles/kabi_h.dir/config.o CMakeFiles/kabi_h.dir/log.o CMakeFiles/kabi_h.dir/util.o
+/usr/bin/ranlib libkabi_h.a
