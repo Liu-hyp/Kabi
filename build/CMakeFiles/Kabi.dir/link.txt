@@ -1,1 +1,0 @@
-/usr/bin/c++  -std=c++0x -g CMakeFiles/Kabi.dir/test_log.cpp.o -o Kabi  kabisrc/common/libcommon.a 

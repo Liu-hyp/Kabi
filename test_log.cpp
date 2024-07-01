@@ -1,5 +1,5 @@
-#include "kabi/common/config.h"
-#include "kabi/common/log.h"
+#include "include/config.h"
+#include "include/log.h"
 #include <thread>
 
 void* fun(void*)
@@ -15,7 +15,8 @@ void* fun(void*)
 
 int main()
 {
-    kabi::config::set_global_config("../conf/kabi.xml");
+    std::string xmlfile = "/mnt/hgfs/Share/Kabi/kabi.xml";
+    kabi::config::set_global_config(xmlfile.c_str());
     kabi::logger::init_global_logger();
     pthread_t thread;
     pthread_create(&thread, NULL, &fun, NULL);
