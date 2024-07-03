@@ -2,8 +2,14 @@
 #include "../include/log.h"
 namespace kabi
 {
-fdEvent::fdEvent(int fd):m_fd(fd){};
-fdEvent::~fdEvent(){};
+fdEvent::fdEvent(int fd):m_fd(fd){
+    memset(&m_listen_events, 0 ,sizeof(m_listen_events));
+}
+fdEvent::fdEvent()
+{
+    memset(&m_listen_events, 0, sizeof(m_listen_events));
+}
+fdEvent::~fdEvent(){}
 std::function<void()> fdEvent::handler(FdTriggerEvent event_type)
 {
     if(event_type == FdTriggerEvent::IN_EVENT)

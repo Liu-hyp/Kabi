@@ -13,6 +13,7 @@ public:
         OUT_EVENT = EPOLLOUT,
     };
     fdEvent(int fd);
+    fdEvent();
     ~fdEvent();
     std::function<void()> handler(FdTriggerEvent event_type);
 

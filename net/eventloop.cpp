@@ -7,6 +7,7 @@
         op = EPOLL_CTL_MOD; \
     } \
     epoll_event tmp = event->get_epoll_event(); \
+    INFOLOG("epoll_event.events = %d", (int)tmp.events); \
     int rt = epoll_ctl(m_epoll_fd, op, event->get_fd(), &tmp); \
     if(rt == -1) \
     { \
@@ -48,6 +49,7 @@ eventloop::eventloop()
         exit(0);
     }
     init_wakeup_fd_event();
+    init_timer();
     INFOLOG("succ create event loop in thread %d", m_pid);
     t_current_eventloop = this;
 }
@@ -59,6 +61,11 @@ eventloop::~eventloop()
         delete m_wakeup_fd_event;
         m_wakeup_fd_event = nullptr;
     }
+    if(m_timer)
+    {
+        delete m_timer;
+        m_timer = nullptr;
+    }
 
 }
 void eventloop::loop()
@@ -66,18 +73,22 @@ void eventloop::loop()
     while(!m_stop_flag)
     {
         scope_mutext<mutex> locker(m_mutex);
-        std::queue<std::function<void()>>tmp_tasks = m_pending_tasks;
+        std::queue<std::function<void()>>tmp_tasks;
         m_pending_tasks.swap(tmp_tasks);
         locker.unlock();
         while(!tmp_tasks.empty())
         {
             std::function<void()> cb = tmp_tasks.front();
+            tmp_tasks.pop();
             if(cb)
             {
                 cb();
             }
-            tmp_tasks.pop();
+            
         }
+        //如果有定时任务需要执行，那么执行
+        //1.怎么判断一个定时任务需要执行？(now() > TimerEvent.arrtive_time)
+        //2.arrtive_time 如何让event loop监听
         int timeout = g_global_max_timeout;
         epoll_event result_event[g_epoll_max_event];
         DEBUGLOG("now begin to epoll wait");
@@ -96,12 +107,12 @@ void eventloop::loop()
                 {
                     continue;
                 }
-                if(trigger_event.events | EPOLLIN)
+                if(trigger_event.events & EPOLLIN)
                 {
                     DEBUGLOG("fd[%d] trigger in EPOLLIN event", fd_event->get_fd());
-                    add_task(fd_event->handler(fdEvent::FdTriggerEvent::IN_EVENT));
+                    add_task(fd_event->handler(fdEvent::FdTriggerEvent::IN_EVENT));                  
                 }
-                if(trigger_event.events | EPOLLOUT)
+                if(trigger_event.events & EPOLLOUT)
                 {
                     DEBUGLOG("fd[%d] trigger in EPOLLOUT event", fd_event->get_fd());
                     add_task(fd_event->handler(fdEvent::FdTriggerEvent::OUT_EVENT));
@@ -173,6 +184,7 @@ void eventloop::init_wakeup_fd_event()
         exit(0);
     }
     m_wakeup_fd_event = new wakeUpFdEvent(m_wakeup_fd);
+    DEBUGLOG("success create wake up fd event");
     auto m_read_callback = [this](){
         char buf[8];
         while(read(m_wakeup_fd, buf, 8) != -1 && errno != EAGAIN) //非阻塞 循环读 
@@ -182,5 +194,14 @@ void eventloop::init_wakeup_fd_event()
     };
     m_wakeup_fd_event->listen(fdEvent::FdTriggerEvent::IN_EVENT, m_read_callback); //监听可读事件
     add_epoll_event(m_wakeup_fd_event);
+}
+void eventloop::init_timer()
+{
+    m_timer = new timer();
+    add_epoll_event(m_timer);
+}
+void eventloop::add_timer_event(timerEvent::s_ptr event)
+{
+    m_timer->add_timer_event(event);
 }
 }

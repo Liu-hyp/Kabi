@@ -13,6 +13,7 @@
 #include "fd_event.h"
 #include <string.h>
 #include "wakeup_fd_event.h"
+#include "timer.h"
 namespace kabi{
 class eventloop
 {
@@ -26,9 +27,11 @@ public:
     void del_epoll_event(fdEvent* event);
     bool is_inloop_thread();
     void add_task(std::function<void()> cb, bool is_wake_up = false);
-    void init_wakeup_fd_event();
+    void add_timer_event(timerEvent::s_ptr event);
 private:
     void deal_wakeup();
+    void init_wakeup_fd_event();
+    void init_timer();
 private:
     pid_t m_pid {0};
     pid_t m_thread_id {0};
@@ -39,6 +42,7 @@ private:
     kabi::mutex m_mutex;
     std::set<int>m_listen_fds; //当前监听的所有套接字
     std::queue<std::function<void()>>m_pending_tasks;
+    timer* m_timer {nullptr};
 };
 }
 #endif //KABI_NET_EVENTLOOP_H

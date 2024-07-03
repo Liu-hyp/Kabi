@@ -8,6 +8,8 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+#include "net/timer_event.h"
+#include <memory>
 
 int main()
 {
@@ -42,13 +44,18 @@ int main()
     event.listen(kabi::fdEvent::FdTriggerEvent::IN_EVENT, [listenfd](){
         sockaddr_in peer_addr;
         memset(&peer_addr, 0, sizeof(peer_addr));
-        socklen_t addr_len = 0;
+        socklen_t addr_len = sizeof(peer_addr);
         int clientfd = accept(listenfd, reinterpret_cast<sockaddr*>(&peer_addr), &addr_len);
         const char* ip = inet_ntoa(peer_addr.sin_addr);
         int port = ntohs(peer_addr.sin_port);
         DEBUGLOG("success get client fd[%d], peer addr: [%s : %d]", clientfd, ip, port);
     });
     eventloop->add_epoll_event(&event);
+    int i = 0;
+    kabi::timerEvent::s_ptr timer_event = std::make_shared<kabi::timerEvent>(1000, true, [&i](){
+        INFOLOG("trigger timer event, count %d", i++);
+    });
+    eventloop->add_timer_event(timer_event);
     eventloop->loop();
     return 0;
 }

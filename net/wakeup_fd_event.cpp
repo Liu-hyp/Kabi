@@ -18,5 +18,6 @@ void wakeUpFdEvent::wakeup()
     {
         ERRORLOG("failed tp wake up fd less than 8 bytes, fd[%d]", m_fd);
     }
+    DEBUGLOG("success read 8 bytes to wakeup epoll wait");
 }
 }
