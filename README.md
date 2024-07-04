@@ -4,3 +4,10 @@
 kabi采用的是主从Reactor模型， 有一个mainReactor和多个subReactor。
 mainReactor由主线程运行：通过epoll监听listenfd可读事件，当可读事件发生后，accept一个clientfd，然后随机读取一个subReactor，将clientfd的读写事件注册到subReactor的epoll上即可。
 也就是说，mainReactor只负责建立连接事件，不进行业务处理，也不关心已连接套接字的IO事件
+
+采用应用层buffer
+方便数据处理，特别是应用层的包组装和拆解
+方便异步的发送（发送数据直接塞到发送缓冲里，等待epoll异步去发送
+提高发送效率，多个包合并到一起发送
+
+

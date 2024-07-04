@@ -11,6 +11,7 @@
 #include "net/timer_event.h"
 #include <memory>
 #include "net/io_thread.h"
+#include "net/io_thread_group.h"
 
 void test_io_thread()
 {
@@ -51,11 +52,20 @@ void test_io_thread()
     kabi::timerEvent::s_ptr timer_event = std::make_shared<kabi::timerEvent>(1000, true, [&i](){
         INFOLOG("trigger timer event, count %d", i++);
     });
-    kabi::ioThread io_thread;
-    io_thread.get_event_loop()->add_epoll_event(&event);
-    io_thread.get_event_loop()->add_timer_event(timer_event);
-    io_thread.start();
-    io_thread.join();
+    // kabi::ioThread io_thread;
+    // io_thread.get_event_loop()->add_epoll_event(&event);
+    // io_thread.get_event_loop()->add_timer_event(timer_event);
+    // io_thread.start();
+    // io_thread.join();
+    kabi::ioThreadGroup io_thread_group(2);
+    kabi::ioThread* io_thread = io_thread_group.get_io_thread();
+    io_thread->get_event_loop()->add_epoll_event(&event);
+    io_thread->get_event_loop()->add_timer_event(timer_event);
+
+    kabi::ioThread* io_thread2 = io_thread_group.get_io_thread();
+    io_thread2->get_event_loop()->add_timer_event(timer_event);
+    io_thread_group.start();
+    io_thread_group.join();
 }
 int main()
 {

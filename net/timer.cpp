@@ -126,7 +126,7 @@ void timer::on_timer()
     }
     m_pending_events.erase(m_pending_events.begin(), it);
     locker.unlock();
-    //需要把重复的Eent。再次添加进m_pending_tasks
+    //需要把重复的Event。再次添加进m_pending_tasks
     for(auto i = tmps.begin(); i != tmps.end(); ++i)
     {
         if((*i)->is_repeated())
