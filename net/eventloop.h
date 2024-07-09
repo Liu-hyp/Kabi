@@ -28,6 +28,8 @@ public:
     bool is_inloop_thread();
     void add_task(std::function<void()> cb, bool is_wake_up = false);
     void add_timer_event(timerEvent::s_ptr event);
+public:
+    static eventloop* get_current_event_loop();
 private:
     void deal_wakeup();
     void init_wakeup_fd_event();

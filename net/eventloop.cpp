@@ -204,4 +204,12 @@ void eventloop::add_timer_event(timerEvent::s_ptr event)
 {
     m_timer->add_timer_event(event);
 }
+eventloop* eventloop::get_current_event_loop()
+{
+    if(t_current_eventloop)
+    {
+        return t_current_eventloop;
+    }t_current_eventloop = new eventloop();
+    return t_current_eventloop;
+}
 }
