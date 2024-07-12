@@ -11,8 +11,9 @@
     int rt = epoll_ctl(m_epoll_fd, op, event->get_fd(), &tmp); \
     if(rt == -1) \
     { \
-        ERRORLOG("failed epoll_ctl when add fd %d, errno = %d", event->get_fd(), errno); \
+        ERRORLOG("failed epoll_ctl when add fd %d, errno = %d, error = %s", event->get_fd(), errno, strerror(errno)); \
     } \
+    m_listen_fds.insert(event->get_fd()); \
     DEBUGLOG("add event success, fd[%d]", event->get_fd()); \
 
 #define DEL_TO_EPOLL() \
@@ -26,8 +27,9 @@
     int rt = epoll_ctl(m_epoll_fd, op, event->get_fd(), &tmp); \
     if(rt == -1) \
     { \
-        ERRORLOG("failed to epoll ctl when del, error = %d, error = %s", errno, strerror(errno)); \
+        ERRORLOG("failed to epoll ctl when del, errno = %d, error = %s", errno, strerror(errno)); \
     } \
+    m_listen_fds.erase(event->get_fd()); \
     DEBUGLOG("del event success, fd[%d]", event->get_fd()); \
 
 namespace kabi{
@@ -70,6 +72,7 @@ eventloop::~eventloop()
 }
 void eventloop::loop()
 {
+    m_is_looping = true;
     while(!m_stop_flag)
     {
         scope_mutext<mutex> locker(m_mutex);
@@ -120,6 +123,10 @@ void eventloop::loop()
             }
         }        
     }
+}
+bool eventloop::is_looping()
+{
+    return m_is_looping;
 }
 void eventloop::wakeup()
 {

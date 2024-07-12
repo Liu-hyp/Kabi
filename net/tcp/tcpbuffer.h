@@ -1,11 +1,13 @@
 #ifndef KABI_NET_TCP_TCPBUFFER_H
 #define KABI_NET_TCP_TCPBUFFER_H
 #include <vector>
+#include <memory>
 namespace kabi
 {
 class tcpBuffer
 {
 public:
+    typedef std::shared_ptr<tcpBuffer> s_ptr;
     tcpBuffer(int size);
     ~tcpBuffer();
     //返回可读字节数
@@ -24,6 +26,7 @@ private:
     int m_read_idx {0};
     int m_write_idx {0};
     int m_size {0};
+public:
     std::vector<char>m_buffer;
 
 };

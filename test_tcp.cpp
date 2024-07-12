@@ -4,7 +4,7 @@
 #include <memory>
 void test_tcp_server()
 {
-    kabi::ipNetAddr::s_ptr addr = std::make_shared<kabi::ipNetAddr>("127.0.0.1", 8080);
+    kabi::ipNetAddr::s_ptr addr = std::make_shared<kabi::ipNetAddr>("192.168.247.128", 8080);
     DEBUGLOG("create addr %s", addr->toString().c_str());
     kabi::tcpServer tcp_server(addr);
     tcp_server.start();

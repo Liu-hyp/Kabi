@@ -28,6 +28,7 @@ public:
     bool is_inloop_thread();
     void add_task(std::function<void()> cb, bool is_wake_up = false);
     void add_timer_event(timerEvent::s_ptr event);
+    bool is_looping();
 public:
     static eventloop* get_current_event_loop();
 private:
@@ -45,6 +46,7 @@ private:
     std::set<int>m_listen_fds; //当前监听的所有套接字
     std::queue<std::function<void()>>m_pending_tasks;
     timer* m_timer {nullptr};
+    bool m_is_looping {false};
 };
 }
 #endif //KABI_NET_EVENTLOOP_H

@@ -40,6 +40,7 @@ void tcpBuffer::write_buffer(const char* buf, int size)
         resize_buffer(new_size);
     }
     memcpy(&m_buffer[m_write_idx], buf, size);
+    m_write_idx += size;
 }
 void tcpBuffer::read_from_buffer(std::vector<char>& re, int size)
 {

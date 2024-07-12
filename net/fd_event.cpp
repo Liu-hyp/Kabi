@@ -1,5 +1,6 @@
 #include "fd_event.h"
 #include "../include/log.h"
+#include <fcntl.h>
 namespace kabi
 {
 fdEvent::fdEvent(int fd):m_fd(fd){
@@ -37,5 +38,24 @@ void fdEvent::listen(FdTriggerEvent event_type, std::function<void()> callback)
     m_listen_events.data.ptr = this;
     
 }
-
+void fdEvent::set_nonblock()
+{
+    int flag = fcntl(m_fd, F_GETFL, 0);
+    if(flag & O_NONBLOCK)
+    {
+        return;
+    }
+    fcntl(m_fd, F_SETFL, flag |= O_NONBLOCK);
+}
+void fdEvent::cancel(FdTriggerEvent event_type)
+{
+    if(event_type == FdTriggerEvent::IN_EVENT)
+    {
+        m_listen_events.events &= (~EPOLLIN);
+    }
+    else if(event_type == FdTriggerEvent::OUT_EVENT)
+    {
+        m_listen_events.events &= (~EPOLLOUT);
+    }
+}
 }

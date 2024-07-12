@@ -15,9 +15,12 @@ public:
     fdEvent(int fd);
     fdEvent();
     ~fdEvent();
+    void set_nonblock();
     std::function<void()> handler(FdTriggerEvent event_type);
 
     void listen(FdTriggerEvent event_type, std::function<void()> callback);
+    //取消监听
+    void cancel(FdTriggerEvent event_type);
     int get_fd() const{return m_fd;}
     epoll_event get_epoll_event()
     {

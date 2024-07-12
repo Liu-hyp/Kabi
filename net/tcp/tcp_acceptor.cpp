@@ -40,7 +40,7 @@ tcpAcceptor::~tcpAcceptor()
 {
 
 }
-int tcpAcceptor::tcp_accept()
+std::pair<int, netAddr::s_ptr> tcpAcceptor::tcp_accept()
 {
     if(m_family == AF_INET)
     {
@@ -52,13 +52,14 @@ int tcpAcceptor::tcp_accept()
         {
             ERRORLOG("accept error, errno = %d, error = %s", errno, strerror(errno));
         }
-        ipNetAddr peer_addr(client_addr);
-        INFOLOG("A client have accepted succ, peer addr [%s]", peer_addr.toString());
-        return client_fd;
+        ipNetAddr::s_ptr peer_addr = std::make_shared<ipNetAddr>(client_addr);
+        INFOLOG("A client have accepted succ, peer addr [%s]", peer_addr->toString().c_str());
+        return std::make_pair(client_fd, peer_addr);
     }
     else
     {
         //...其他协议可以扩展
+        return std::make_pair(-1, nullptr);
     }
 }
 int tcpAcceptor::get_listen_fd()

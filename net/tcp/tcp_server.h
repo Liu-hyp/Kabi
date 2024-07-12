@@ -4,6 +4,8 @@
 #include "net_addr.h"
 #include "../eventloop.h"
 #include "../io_thread_group.h"
+#include "tcp_connection.h"
+#include <set>
 namespace kabi
 {
 class tcpServer
@@ -23,6 +25,7 @@ private:
     ioThreadGroup* m_io_thread_group {NULL}; // subReactor
     fdEvent* m_listen_fd_event {NULL};
     int m_client_counts {0};
+    std::set<tcpConnection::s_ptr>m_client;
 };
 }
 #endif

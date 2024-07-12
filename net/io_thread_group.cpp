@@ -4,7 +4,7 @@ namespace kabi
 ioThreadGroup::ioThreadGroup(int size):m_size(size)
 {
     m_io_thread_groups.resize(size);
-    for(size_t i = 0; i < size; ++i)
+    for(size_t i = 0; (int)i < size; ++i)
     {
         m_io_thread_groups[i] = new ioThread();
     }

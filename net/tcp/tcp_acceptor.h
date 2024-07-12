@@ -10,7 +10,7 @@ public:
     typedef std::shared_ptr<tcpAcceptor> s_ptr;
     tcpAcceptor(netAddr::s_ptr local_addr);
     ~tcpAcceptor();
-    int tcp_accept();
+    std::pair<int, netAddr::s_ptr> tcp_accept();
     int get_listen_fd();
 private:
     netAddr::s_ptr m_local_addr;//addr ip:port

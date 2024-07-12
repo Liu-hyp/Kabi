@@ -1,11 +1,12 @@
 #include "tcp_server.h"
 #include "../../include/log.h"
+#include "tcp_connection.h"
 namespace kabi
 {
 tcpServer::tcpServer(netAddr::s_ptr local_addr) : m_local_addr(local_addr)
 {
     init();
-    INFOLOG("rocket tcpServer listen success on [%s]", m_local_addr->toString().c_str());
+    INFOLOG("kabi tcpServer listen success on [%s]", m_local_addr->toString().c_str());
 }
 tcpServer::~tcpServer()
 {
@@ -33,11 +34,17 @@ void tcpServer::init()
 
 void tcpServer::on_accept()
 {
-    int client_fd = m_acceptor->tcp_accept();
+    auto re = m_acceptor->tcp_accept();
+    int client_fd = re.first;
+    netAddr::s_ptr peer_addr = re.second;
     fdEvent client_fd_event(client_fd);
     m_client_counts++;
     //TODO::把clientfd添加到任意IO线程里面
     //m_io_thread_group->get_io_thread()->get_event_loop()->add_epoll_event(client_fd_event);
+    ioThread* io_thread = m_io_thread_group->get_io_thread();
+    tcpConnection::s_ptr connection = std::make_shared<tcpConnection>(io_thread->get_event_loop(), client_fd, 128, peer_addr);
+    connection->set_state(TCPSTATE::CONNECTED);
+    m_client.insert(connection);
     INFOLOG("tcpServer success get client, fd = %d", client_fd);
 }
 }
