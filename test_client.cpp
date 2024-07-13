@@ -13,6 +13,8 @@
 #include "net/tcp/tcp_connection.h"
 #include "net/tcp/net_addr.h"
 #include "net/tcp/tcp_client.h"
+#include "net/string_coder.h"
+#include "net/abstract_protocol.h"
 
 void test_connect()
 {
@@ -44,8 +46,14 @@ void test_tcp_client()
 {
     kabi::ipNetAddr::s_ptr addr = std::make_shared<kabi::ipNetAddr>("192.168.247.128", 8080);
     kabi::tcpClient client(addr);
-    client.tcp_connect([addr](){
+    client.tcp_connect([addr, &client](){
         DEBUGLOG("connect to [%s] success", addr->toString().c_str());
+        std::shared_ptr<kabi::stringProtocol> message = std::make_shared<kabi::stringProtocol>();
+        message->info = "hello my kabi!";
+        message->set_reqId("123456");
+        client.write_msg(message, [](kabi::abstractProtocol::s_ptr msg_ptr){
+            DEBUGLOG("send message success");
+        });
     });
 }
 int main()

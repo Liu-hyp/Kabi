@@ -2,21 +2,30 @@
 #include "../fd_event_group.h"
 #include "../../include/log.h"
 #include <unistd.h>
+#include "../string_coder.h"
 namespace kabi
 {
-tcpConnection::tcpConnection(eventloop* event_loop, int fd, int buffer_size, netAddr::s_ptr peer_addr)
-:m_event_loop(event_loop), m_peer_addr(peer_addr), m_state(TCPSTATE::NOTCONNECTED), m_fd(fd)
+tcpConnection::tcpConnection(eventloop* event_loop, int fd, int buffer_size, netAddr::s_ptr peer_addr, TCPCONNECTIONTYPE type /*= TCPCONNECTIONTYPE::SERVER*/)
+:m_event_loop(event_loop), m_peer_addr(peer_addr), m_state(TCPSTATE::NOTCONNECTED), m_fd(fd), m_connection_type(type)
 {
     m_in_buffer = std::make_shared<tcpBuffer>(buffer_size);
     m_out_buffer = std::make_shared<tcpBuffer>(buffer_size);
     m_fd_event = fdEventGroup::get_fd_event_group()->get_fd_event(fd);
     m_fd_event->set_nonblock();
-    m_fd_event->listen(fdEvent::FdTriggerEvent::IN_EVENT, std::bind(&tcpConnection::on_read, this));
-    event_loop->add_epoll_event(m_fd_event);
+    if(m_connection_type == TCPCONNECTIONTYPE::SERVER)
+    {
+        listen_read_event();
+    } //如果是客户端，就需要读回报的时候再监听，服务端可以直接监听   
+    m_coder = new stringCoder();
 }
 tcpConnection::~tcpConnection()
 {
     DEBUGLOG("~tcpConnection");
+    if(m_coder)
+    {
+        delete m_coder;
+        m_coder = nullptr;
+    }
 }
 void tcpConnection::on_read()
 {
@@ -86,19 +95,36 @@ void tcpConnection::on_read()
 }
 void tcpConnection::excute()
 {
-    //将rpc请求执行业务逻辑， 获取rpc响应， 再把rpc响应发送回去
-    std::vector<char>tmp;
-    int size = m_in_buffer->read_able();
-    m_in_buffer->read_from_buffer(tmp, size);
-    std::string msg;
-    for(int i = 0; i < tmp.size(); ++i)
+    if(m_connection_type == TCPCONNECTIONTYPE::SERVER)
     {
-        msg += tmp[i];
+        //将rpc请求执行业务逻辑， 获取rpc响应， 再把rpc响应发送回去
+        std::vector<char>tmp;
+        int size = m_in_buffer->read_able();
+        m_in_buffer->read_from_buffer(tmp, size);
+        std::string msg;
+        for(int i = 0; i < tmp.size(); ++i)
+        {
+            msg += tmp[i];
+        }
+        INFOLOG("success get request[%s] from client[%s]", msg.c_str(), m_peer_addr->toString().c_str());
+        m_out_buffer->write_buffer(msg.c_str(), msg.length());
+        listen_write_event();
     }
-    INFOLOG("success get request[%s] from client[%s]", msg.c_str(), m_peer_addr->toString().c_str());
-    m_out_buffer->write_buffer(msg.c_str(), msg.length());
-    m_fd_event->listen(fdEvent::FdTriggerEvent::OUT_EVENT, std::bind(&tcpConnection::on_write, this));
-    m_event_loop->add_epoll_event(m_fd_event);
+    else
+    {
+        //从buffer里面decode得到message对象，执行其回调
+        std::vector<abstractProtocol::s_ptr>result;
+        m_coder->decode(result, m_in_buffer);
+        for(size_t i = 0; i < result.size(); ++i)
+        {
+            std::string req_id = result[i]->get_reqId();
+            auto it = m_read_dones.find(req_id);
+            if(it != m_read_dones.end())
+            {
+                it->second(result[i]->shared_from_this()); //用shared_from_this方法获取智能指针
+            }
+        }
+    }   
 }
 void tcpConnection::on_write()
 {
@@ -107,6 +133,18 @@ void tcpConnection::on_write()
     {
         INFOLOG("Onwrite error, client has already disconnected, addr[%s], clientfd[%d]", m_peer_addr->toString().c_str(), m_fd);
         return;
+    }
+    if(m_connection_type == TCPCONNECTIONTYPE::CLIENT)
+    {
+        //将message编码，得到字节流
+        //将字节流写入到buffer里面，然后全部发送
+        std::vector<abstractProtocol::s_ptr> messages;
+        for(int i = 0; i < m_write_dones.size(); ++i)
+        {
+            messages.push_back(m_write_dones[i].first);
+        }
+        m_coder->encode(messages, m_out_buffer);
+
     }
     bool is_write_all = false;
     while(true)
@@ -138,6 +176,15 @@ void tcpConnection::on_write()
         m_fd_event->cancel(fdEvent::FdTriggerEvent::OUT_EVENT);
         m_event_loop->add_epoll_event(m_fd_event);
     }
+    if(m_connection_type == TCPCONNECTIONTYPE::CLIENT)
+    {
+        for(size_t i = 0; i < m_write_dones.size(); ++i)
+        {
+            m_write_dones[i].second(m_write_dones[i].first);
+        }
+        m_write_dones.clear();
+    }
+    
 }
 void tcpConnection::set_state(const TCPSTATE state)
 {
@@ -175,6 +222,20 @@ void tcpConnection::shut_down()
 void tcpConnection::set_connection_type(TCPCONNECTIONTYPE type)
 {
     m_connection_type = type;
+}
+void tcpConnection::listen_write_event()
+{
+    m_fd_event->listen(fdEvent::FdTriggerEvent::OUT_EVENT, std::bind(&tcpConnection::on_write, this));
+    m_event_loop->add_epoll_event(m_fd_event);
+}
+void tcpConnection::listen_read_event()
+{
+    m_fd_event->listen(fdEvent::FdTriggerEvent::IN_EVENT, std::bind(&tcpConnection::on_read, this));
+    m_event_loop->add_epoll_event(m_fd_event);
+}
+void tcpConnection::push_send_msg(abstractProtocol::s_ptr message, std::function<void(abstractProtocol::s_ptr)> done)
+{
+    m_write_dones.push_back(std::make_pair(message, done));
 }
 
 }

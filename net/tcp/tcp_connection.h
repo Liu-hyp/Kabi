@@ -4,6 +4,12 @@
 #include "tcpbuffer.h"
 #include "../io_thread.h"
 #include <memory>
+#include <vector>
+#include <map>
+#include <queue>
+#include <string.h>
+#include "../abstract_protocol.h"
+#include "../abstract_coder.h"
 namespace kabi
 {
 enum class TCPSTATE
@@ -24,7 +30,7 @@ class tcpConnection
 public:
     typedef std::shared_ptr<tcpConnection> s_ptr;   
 public:
-    tcpConnection(eventloop* event_loop, int fd, int buffer_size, netAddr::s_ptr peer_addr);
+    tcpConnection(eventloop* event_loop, int fd, int buffer_size, netAddr::s_ptr peer_addr, TCPCONNECTIONTYPE type = TCPCONNECTIONTYPE::SERVER);
     ~tcpConnection();
     void on_read();
     void excute();
@@ -34,6 +40,11 @@ public:
     void clear();
     void shut_down(); //服务器主动关闭连接
     void set_connection_type(TCPCONNECTIONTYPE type);
+    //启动监听可写事件
+    void listen_write_event();
+    //启动监听可读事件
+    void listen_read_event();
+    void push_send_msg(abstractProtocol::s_ptr, std::function<void(abstractProtocol::s_ptr)> done);
 private:
     netAddr::s_ptr m_local_addr;
     netAddr::s_ptr m_peer_addr;
@@ -41,9 +52,13 @@ private:
     tcpBuffer::s_ptr m_out_buffer; //发送缓冲区
     eventloop* m_event_loop {NULL}; //代表持有该连接的io线程
     fdEvent* m_fd_event {NULL}; 
+    abstractCoder* m_coder {NULL};
     TCPSTATE m_state;
     int m_fd {0};
     TCPCONNECTIONTYPE m_connection_type {TCPCONNECTIONTYPE::SERVER};
+    std::vector<std::pair<abstractProtocol::s_ptr, std::function<void(abstractProtocol::s_ptr)>>> m_write_dones;
+    std::map<std::string, std::function<void(abstractProtocol::s_ptr)>> m_read_dones;
+    
 };
 }
 #endif //KABI_NET_TCP_TCP_CONNECTION_H
