@@ -2,7 +2,7 @@
 #include "../fd_event_group.h"
 #include "../../include/log.h"
 #include <unistd.h>
-#include "../string_coder.h"
+#include "../coder/string_coder.h"
 namespace kabi
 {
 tcpConnection::tcpConnection(eventloop* event_loop, int fd, int buffer_size, netAddr::s_ptr peer_addr, TCPCONNECTIONTYPE type /*= TCPCONNECTIONTYPE::SERVER*/)
@@ -117,7 +117,7 @@ void tcpConnection::excute()
         m_coder->decode(result, m_in_buffer);
         for(size_t i = 0; i < result.size(); ++i)
         {
-            std::string req_id = result[i]->get_reqId();
+            std::string req_id = result[i]->m_req_id;
             auto it = m_read_dones.find(req_id);
             if(it != m_read_dones.end())
             {

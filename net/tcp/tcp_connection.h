@@ -8,8 +8,8 @@
 #include <map>
 #include <queue>
 #include <string.h>
-#include "../abstract_protocol.h"
-#include "../abstract_coder.h"
+#include "../coder/abstract_protocol.h"
+#include "../coder/abstract_coder.h"
 namespace kabi
 {
 enum class TCPSTATE
