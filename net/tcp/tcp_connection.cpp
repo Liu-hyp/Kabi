@@ -237,5 +237,9 @@ void tcpConnection::push_send_msg(abstractProtocol::s_ptr message, std::function
 {
     m_write_dones.push_back(std::make_pair(message, done));
 }
+void tcpConnection::push_read_msg(const std::string& req_id, std::function<void(abstractProtocol::s_ptr)> done)
+{
+    m_read_dones.insert(std::make_pair(req_id, done));
+}
 
 }

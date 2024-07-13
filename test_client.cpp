@@ -54,6 +54,10 @@ void test_tcp_client()
         client.write_msg(message, [](kabi::abstractProtocol::s_ptr msg_ptr){
             DEBUGLOG("send message success");
         });
+        client.read_msg("123456", [](kabi::abstractProtocol::s_ptr msg_ptr){
+            std::shared_ptr<kabi::stringProtocol>message = std::dynamic_pointer_cast<kabi::stringProtocol>(msg_ptr); 
+            DEBUGLOG("req_id %s, get response %s", message->get_reqId().c_str(), message->info.c_str());
+        });
     });
 }
 int main()

@@ -45,6 +45,7 @@ public:
     //启动监听可读事件
     void listen_read_event();
     void push_send_msg(abstractProtocol::s_ptr, std::function<void(abstractProtocol::s_ptr)> done);
+    void push_read_msg(const std::string& req_id, std::function<void(abstractProtocol::s_ptr)> done);
 private:
     netAddr::s_ptr m_local_addr;
     netAddr::s_ptr m_peer_addr;

@@ -5,7 +5,7 @@
 #include "tcp/tcpbuffer.h"
 namespace kabi
 {
-class abstractProtocol
+class abstractProtocol : public std::enable_shared_from_this<abstractProtocol>
 {
 public:
     typedef std::shared_ptr<abstractProtocol>s_ptr;
