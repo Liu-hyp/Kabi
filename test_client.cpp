@@ -13,8 +13,10 @@
 #include "net/tcp/tcp_connection.h"
 #include "net/tcp/net_addr.h"
 #include "net/tcp/tcp_client.h"
-#include "net/coder/string_coder.h"
+//#include "net/coder/string_coder.h"
 #include "net/coder/abstract_protocol.h"
+#include "net/coder/tinypb_coder.h"
+#include "net/coder/tinypb_protocol.h"
 
 void test_connect()
 {
@@ -48,15 +50,18 @@ void test_tcp_client()
     kabi::tcpClient client(addr);
     client.tcp_connect([addr, &client](){
         DEBUGLOG("connect to [%s] success", addr->toString().c_str());
-        std::shared_ptr<kabi::stringProtocol> message = std::make_shared<kabi::stringProtocol>();
-        message->info = "hello my kabi!";
+        //std::shared_ptr<kabi::stringProtocol> message = std::make_shared<kabi::stringProtocol>();
+        std::shared_ptr<kabi::tinyPBProtocol> message = std::make_shared<kabi::tinyPBProtocol>();
+        //message->info = "hello my kabi!";
+        message->m_pb_data = "test pb data";
         message->m_req_id = "123456";
         client.write_msg(message, [](kabi::abstractProtocol::s_ptr msg_ptr){
             DEBUGLOG("send message success");
         });
         client.read_msg("123456", [](kabi::abstractProtocol::s_ptr msg_ptr){
-            std::shared_ptr<kabi::stringProtocol>message = std::dynamic_pointer_cast<kabi::stringProtocol>(msg_ptr); 
-            DEBUGLOG("req_id %s, get response %s", message->m_req_id.c_str(), message->info.c_str());
+            //std::shared_ptr<kabi::stringProtocol>message = std::dynamic_pointer_cast<kabi::stringProtocol>(msg_ptr); 
+            std::shared_ptr<kabi::tinyPBProtocol> message = std::dynamic_pointer_cast<kabi::tinyPBProtocol>(msg_ptr);
+            DEBUGLOG("req_id %s, get response %s", message->m_req_id.c_str(), message->m_pb_data.c_str());
         });
     });
 }

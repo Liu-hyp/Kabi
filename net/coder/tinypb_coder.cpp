@@ -4,10 +4,27 @@
 #include "../../include/util.h"
 #include "../../include/log.h"
 #include <string.h>
+#include <memory>
 namespace kabi
 {
 void tinyPBCoder::encode(std::vector<abstractProtocol::s_ptr>& messages, tcpBuffer::s_ptr out_buffer)
 {
+    for(auto& i : messages)
+    {
+        std::shared_ptr<tinyPBProtocol> msg = std::dynamic_pointer_cast<tinyPBProtocol>(i);
+        int len = 0;
+        const char* buf = encode_tiny_pb(msg, len);
+        if(buf != NULL && len != 0)
+        {
+            out_buffer->write_buffer(buf, len);
+        }
+        if(buf)
+        {
+            free((void*)buf);
+            buf = NULL;
+        }
+    }
+    
 
 }
     //将buffer字节流转化为message对象
@@ -63,6 +80,7 @@ void tinyPBCoder::decode(std::vector<abstractProtocol::s_ptr>& out_messages, tcp
             {
                 message->parse_success = false;
                 ERRORLOG("parse error, req_id_len_index [%d] >= end_index [%d]", req_id_len_index, end_index);
+                continue;
             }
             message->m_req_id_len = get_int32_from_net_byte(&tmp[req_id_len_index]);
             DEBUGLOG("parse req_id_index = %d", message->m_req_id_len);
@@ -77,6 +95,7 @@ void tinyPBCoder::decode(std::vector<abstractProtocol::s_ptr>& out_messages, tcp
             {
                 message->parse_success = false;
                 ERRORLOG("parse error, method_name_len_index[%d] >= end_index[%d]", method_name_len_index, end_index);
+                continue;
             }
             message->m_method_name_len = get_int32_from_net_byte(&tmp[method_name_len_index]);
             int method_name_index = method_name_len_index + sizeof(message->m_method_name_len);
@@ -89,6 +108,7 @@ void tinyPBCoder::decode(std::vector<abstractProtocol::s_ptr>& out_messages, tcp
             if (err_code_index >= end_index) {
                 message->parse_success = false;
                 ERRORLOG("parse error, err_code_index[%d] >= end_index[%d]", err_code_index, end_index);
+                continue;
             }
             message->m_err_code = get_int32_from_net_byte(&tmp[err_code_index]);
 
@@ -97,6 +117,7 @@ void tinyPBCoder::decode(std::vector<abstractProtocol::s_ptr>& out_messages, tcp
             if (error_info_len_index >= end_index) {
                 message->parse_success = false;
                 ERRORLOG("parse error, error_info_len_index[%d] >= end_index[%d]", error_info_len_index, end_index);
+                continue;
             }
             message->m_err_info_len = get_int32_from_net_byte(&tmp[error_info_len_index]);
 
@@ -117,6 +138,76 @@ void tinyPBCoder::decode(std::vector<abstractProtocol::s_ptr>& out_messages, tcp
             out_messages.push_back(message);
         }
     }
+    
 
+}
+const char* tinyPBCoder::encode_tiny_pb(std::shared_ptr<tinyPBProtocol> message, int& length)
+{
+    if(message->m_req_id.empty())
+    {
+        message->m_req_id = "1234567";
+    }
+    DEBUGLOG("req_id = %s", message->m_req_id.c_str());
+    int pb_len = 2 + 24 + message->m_req_id.length() + message->m_method_name.length() + message->m_err_info.length() + message->m_pb_data.length();
+    DEBUGLOG("pb_len = %d", pb_len);
+    char* buf = reinterpret_cast<char*>(malloc(pb_len));
+    char* tmp = buf; //tmp为buf指针
+    *tmp = tinyPBProtocol::PB_START;
+    tmp++;
+    int32_t pb_len_net = htonl(pb_len);
+    memcpy(tmp, &pb_len_net, sizeof(pb_len_net));
+    tmp += sizeof(pb_len_net);
+    int req_id_len = message->m_req_id.length();
+    int32_t req_id_len_net = htonl(req_id_len);
+    memcpy(tmp, &req_id_len_net, sizeof(req_id_len_net));
+    tmp += sizeof(req_id_len_net);
+    if (!message->m_req_id.empty()) 
+    {
+        memcpy(tmp, &(message->m_req_id[0]), req_id_len);
+        tmp += req_id_len;
+    }
+    int method_name_len = message->m_method_name.length();
+    int32_t method_name_len_net = htonl(method_name_len);
+    memcpy(tmp, &method_name_len_net, sizeof(method_name_len_net));
+    tmp += sizeof(method_name_len_net);
+    if (!message->m_method_name.empty()) {
+        memcpy(tmp, &(message->m_method_name[0]), method_name_len);
+        tmp += method_name_len;
+    }
+
+    int32_t err_code_net = htonl(message->m_err_code);
+    memcpy(tmp, &err_code_net, sizeof(err_code_net));
+    tmp += sizeof(err_code_net);
+
+    int err_info_len = message->m_err_info.length();
+    int32_t err_info_len_net = htonl(err_info_len);
+    memcpy(tmp, &err_info_len_net, sizeof(err_info_len_net));
+    tmp += sizeof(err_info_len_net);
+
+    if (!message->m_err_info.empty()) {
+        memcpy(tmp, &(message->m_err_info[0]), err_info_len);
+        tmp += err_info_len;
+    }
+
+    if (!message->m_pb_data.empty()) {
+        memcpy(tmp, &(message->m_pb_data[0]), message->m_pb_data.length());
+        tmp += message->m_pb_data.length();
+    }
+
+    int32_t check_sum_net = htonl(1);
+    memcpy(tmp, &check_sum_net, sizeof(check_sum_net));
+    tmp += sizeof(check_sum_net);
+
+    *tmp = tinyPBProtocol::PB_END;
+
+    message->m_pb_len = pb_len;
+    message->m_req_id_len = req_id_len;
+    message->m_method_name_len = method_name_len;
+    message->m_err_info_len = err_info_len;
+    message->parse_success = true;
+    length = pb_len;
+    DEBUGLOG("encode message[%s] success", message->m_req_id.c_str());
+
+    return buf;
 }
 }

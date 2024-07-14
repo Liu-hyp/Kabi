@@ -2,7 +2,7 @@
 #include "../fd_event_group.h"
 #include "../../include/log.h"
 #include <unistd.h>
-#include "../coder/string_coder.h"
+#include "../coder/tinypb_coder.h"
 namespace kabi
 {
 tcpConnection::tcpConnection(eventloop* event_loop, int fd, int buffer_size, netAddr::s_ptr peer_addr, TCPCONNECTIONTYPE type /*= TCPCONNECTIONTYPE::SERVER*/)
@@ -16,7 +16,7 @@ tcpConnection::tcpConnection(eventloop* event_loop, int fd, int buffer_size, net
     {
         listen_read_event();
     } //如果是客户端，就需要读回报的时候再监听，服务端可以直接监听   
-    m_coder = new stringCoder();
+    m_coder = new tinyPBCoder();
 }
 tcpConnection::~tcpConnection()
 {
@@ -98,16 +98,32 @@ void tcpConnection::excute()
     if(m_connection_type == TCPCONNECTIONTYPE::SERVER)
     {
         //将rpc请求执行业务逻辑， 获取rpc响应， 再把rpc响应发送回去
-        std::vector<char>tmp;
-        int size = m_in_buffer->read_able();
-        m_in_buffer->read_from_buffer(tmp, size);
-        std::string msg;
-        for(int i = 0; i < tmp.size(); ++i)
+        // std::vector<char>tmp;
+        // int size = m_in_buffer->read_able();
+        // tmp.resize(size);
+        // m_in_buffer->read_from_buffer(tmp, size);
+        std::vector<abstractProtocol::s_ptr>result;
+        std::vector<abstractProtocol::s_ptr> replay_messages;
+        m_coder->decode(result, m_in_buffer);
+        for(size_t i = 0; i < result.size(); ++i)
         {
-            msg += tmp[i];
+            //1.针对每个请求，调用rpc方法，获取响应message
+            //2.将响应message放入到发送缓冲区，监听可写事件回包
+            INFOLOG("success get request[%s] from client[%s]", result[i]->m_req_id.c_str(), m_peer_addr->toString().c_str());
+
+            std::shared_ptr<tinyPBProtocol> message = std::make_shared<tinyPBProtocol>();
+            message->m_pb_data = "hello. this is kabi rpc test data :)";
+            message->m_req_id = result[i]->m_req_id;
+            replay_messages.emplace_back(message);
         }
-        INFOLOG("success get request[%s] from client[%s]", msg.c_str(), m_peer_addr->toString().c_str());
-        m_out_buffer->write_buffer(msg.c_str(), msg.length());
+        m_coder->encode(replay_messages, m_out_buffer);
+        // std::string msg;
+        // for(int i = 0; i < tmp.size(); ++i)
+        // {
+        //     msg += tmp[i];
+        // }
+        //INFOLOG("success get request[%s] from client[%s]", msg.c_str(), m_peer_addr->toString().c_str());
+        //m_out_buffer->write_buffer(msg.c_str(), msg.length());
         listen_write_event();
     }
     else
