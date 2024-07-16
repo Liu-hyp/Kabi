@@ -10,6 +10,7 @@
 #include <string.h>
 #include "../coder/abstract_protocol.h"
 #include "../coder/abstract_coder.h"
+#include "../rpc/rpc_dispatcher.h"
 namespace kabi
 {
 enum class TCPSTATE
@@ -30,7 +31,7 @@ class tcpConnection
 public:
     typedef std::shared_ptr<tcpConnection> s_ptr;   
 public:
-    tcpConnection(eventloop* event_loop, int fd, int buffer_size, netAddr::s_ptr peer_addr, TCPCONNECTIONTYPE type = TCPCONNECTIONTYPE::SERVER);
+    tcpConnection(eventloop* event_loop, int fd, int buffer_size, netAddr::s_ptr peer_addr, netAddr::s_ptr local_addr, TCPCONNECTIONTYPE type = TCPCONNECTIONTYPE::SERVER);
     ~tcpConnection();
     void on_read();
     void excute();
@@ -46,6 +47,8 @@ public:
     void listen_read_event();
     void push_send_msg(abstractProtocol::s_ptr, std::function<void(abstractProtocol::s_ptr)> done);
     void push_read_msg(const std::string& req_id, std::function<void(abstractProtocol::s_ptr)> done);
+    netAddr::s_ptr get_local_addr();
+    netAddr::s_ptr get_peer_addr();
 private:
     netAddr::s_ptr m_local_addr;
     netAddr::s_ptr m_peer_addr;

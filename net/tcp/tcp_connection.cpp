@@ -3,10 +3,11 @@
 #include "../../include/log.h"
 #include <unistd.h>
 #include "../coder/tinypb_coder.h"
+#include "../rpc/rpc_dispatcher.h"
 namespace kabi
 {
-tcpConnection::tcpConnection(eventloop* event_loop, int fd, int buffer_size, netAddr::s_ptr peer_addr, TCPCONNECTIONTYPE type /*= TCPCONNECTIONTYPE::SERVER*/)
-:m_event_loop(event_loop), m_peer_addr(peer_addr), m_state(TCPSTATE::NOTCONNECTED), m_fd(fd), m_connection_type(type)
+tcpConnection::tcpConnection(eventloop* event_loop, int fd, int buffer_size, netAddr::s_ptr peer_addr, netAddr::s_ptr local_addr, TCPCONNECTIONTYPE type /*= TCPCONNECTIONTYPE::SERVER*/)
+:m_event_loop(event_loop), m_peer_addr(peer_addr), m_local_addr(local_addr), m_state(TCPSTATE::NOTCONNECTED), m_fd(fd), m_connection_type(type)
 {
     m_in_buffer = std::make_shared<tcpBuffer>(buffer_size);
     m_out_buffer = std::make_shared<tcpBuffer>(buffer_size);
@@ -15,6 +16,7 @@ tcpConnection::tcpConnection(eventloop* event_loop, int fd, int buffer_size, net
     if(m_connection_type == TCPCONNECTIONTYPE::SERVER)
     {
         listen_read_event();
+        //m_dispatcher = std::make_shared<rpcDispatcher>(); //只有服务端需要这个
     } //如果是客户端，就需要读回报的时候再监听，服务端可以直接监听   
     m_coder = new tinyPBCoder();
 }
@@ -102,7 +104,7 @@ void tcpConnection::excute()
         // int size = m_in_buffer->read_able();
         // tmp.resize(size);
         // m_in_buffer->read_from_buffer(tmp, size);
-        std::vector<abstractProtocol::s_ptr>result;
+        std::vector<abstractProtocol::s_ptr> result;
         std::vector<abstractProtocol::s_ptr> replay_messages;
         m_coder->decode(result, m_in_buffer);
         for(size_t i = 0; i < result.size(); ++i)
@@ -112,8 +114,10 @@ void tcpConnection::excute()
             INFOLOG("success get request[%s] from client[%s]", result[i]->m_req_id.c_str(), m_peer_addr->toString().c_str());
 
             std::shared_ptr<tinyPBProtocol> message = std::make_shared<tinyPBProtocol>();
-            message->m_pb_data = "hello. this is kabi rpc test data :)";
-            message->m_req_id = result[i]->m_req_id;
+            //message->m_pb_data = "hello. this is kabi rpc test data :)";
+            //message->m_req_id = result[i]->m_req_id;
+            
+            rpcDispatcher::get_rpc_dispatcher()->dispatch(result[i], message, this);//result[i]请求体协议作为入参， message作为出参
             replay_messages.emplace_back(message);
         }
         m_coder->encode(replay_messages, m_out_buffer);
@@ -256,6 +260,14 @@ void tcpConnection::push_send_msg(abstractProtocol::s_ptr message, std::function
 void tcpConnection::push_read_msg(const std::string& req_id, std::function<void(abstractProtocol::s_ptr)> done)
 {
     m_read_dones.insert(std::make_pair(req_id, done));
+}
+netAddr::s_ptr tcpConnection::get_local_addr()
+{
+    return m_local_addr;
+}
+netAddr::s_ptr tcpConnection::get_peer_addr()
+{
+    return m_peer_addr;
 }
 
 }

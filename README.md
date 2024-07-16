@@ -30,3 +30,11 @@ Read：读取客户端发来的数据，组装为RPC请求
 其他errno报错
 
 RPC协议封装
+
+RPC服务端流程
+1.注册OrderService对象（启动时就做的）
+2.从buffer读取数据decode得到请求的tinyPBProtocol对象，然后从请求的tinyPBProtocol 得到method name，OrderService对象里根据service.methon.name找到方法 func
+3.找到对应的request type以及对应的 response type
+4.将请求体里面的pb_data反序列化为request type的一个对象，声明一个空的response type 对象
+5.func(request, response)
+6.将response对象序列化为pb_data，再塞入到tinyPBProtocol结构体中，做encode塞入buffer里面发送回包

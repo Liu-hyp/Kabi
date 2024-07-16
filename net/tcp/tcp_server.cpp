@@ -42,7 +42,7 @@ void tcpServer::on_accept()
     //TODO::把clientfd添加到任意IO线程里面
     //m_io_thread_group->get_io_thread()->get_event_loop()->add_epoll_event(client_fd_event);
     ioThread* io_thread = m_io_thread_group->get_io_thread();
-    tcpConnection::s_ptr connection = std::make_shared<tcpConnection>(io_thread->get_event_loop(), client_fd, 128, peer_addr);
+    tcpConnection::s_ptr connection = std::make_shared<tcpConnection>(io_thread->get_event_loop(), client_fd, 128, peer_addr, m_local_addr);
     connection->set_state(TCPSTATE::CONNECTED);
     m_client.insert(connection);
     INFOLOG("tcpServer success get client, fd = %d", client_fd);
