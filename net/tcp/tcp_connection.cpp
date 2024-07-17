@@ -111,11 +111,11 @@ void tcpConnection::excute()
         {
             //1.针对每个请求，调用rpc方法，获取响应message
             //2.将响应message放入到发送缓冲区，监听可写事件回包
-            INFOLOG("success get request[%s] from client[%s]", result[i]->m_req_id.c_str(), m_peer_addr->toString().c_str());
+            INFOLOG("success get request[%s] from client[%s]", result[i]->m_msg_id.c_str(), m_peer_addr->toString().c_str());
 
             std::shared_ptr<tinyPBProtocol> message = std::make_shared<tinyPBProtocol>();
             //message->m_pb_data = "hello. this is kabi rpc test data :)";
-            //message->m_req_id = result[i]->m_req_id;
+            //message->m_msg_id = result[i]->m_msg_id;
             
             rpcDispatcher::get_rpc_dispatcher()->dispatch(result[i], message, this);//result[i]请求体协议作为入参， message作为出参
             replay_messages.emplace_back(message);
@@ -137,8 +137,8 @@ void tcpConnection::excute()
         m_coder->decode(result, m_in_buffer);
         for(size_t i = 0; i < result.size(); ++i)
         {
-            std::string req_id = result[i]->m_req_id;
-            auto it = m_read_dones.find(req_id);
+            std::string msg_id = result[i]->m_msg_id;
+            auto it = m_read_dones.find(msg_id);
             if(it != m_read_dones.end())
             {
                 it->second(result[i]->shared_from_this()); //用shared_from_this方法获取智能指针
@@ -257,9 +257,9 @@ void tcpConnection::push_send_msg(abstractProtocol::s_ptr message, std::function
 {
     m_write_dones.push_back(std::make_pair(message, done));
 }
-void tcpConnection::push_read_msg(const std::string& req_id, std::function<void(abstractProtocol::s_ptr)> done)
+void tcpConnection::push_read_msg(const std::string& msg_id, std::function<void(abstractProtocol::s_ptr)> done)
 {
-    m_read_dones.insert(std::make_pair(req_id, done));
+    m_read_dones.insert(std::make_pair(msg_id, done));
 }
 netAddr::s_ptr tcpConnection::get_local_addr()
 {

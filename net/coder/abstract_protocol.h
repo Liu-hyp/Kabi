@@ -12,7 +12,7 @@ public:
     virtual ~abstractProtocol(){}
     
 public:
-    std::string m_req_id; //请求号，唯一标识一个请求和响应
+    std::string m_msg_id; //请求号，唯一标识一个请求和响应
 };
 }
 #endif //KABI_NET_ABSTRACT_PROTOCOL_H

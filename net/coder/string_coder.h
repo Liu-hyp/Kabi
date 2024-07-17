@@ -29,7 +29,7 @@ class stringCoder : public abstractCoder
 
     std::shared_ptr<stringProtocol> msg = std::make_shared<stringProtocol>();
     msg->info = info;
-    msg->m_req_id = "123456";
+    msg->m_msg_id = "123456";
     out_messages.push_back(msg);
   }
 };

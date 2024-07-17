@@ -5,7 +5,7 @@ void rpcController::Reset()
 {
     m_error_code = 0;
     m_error_info = "";
-    m_req_id = "";
+    m_msg_id = "";
     m_is_failed = false;
     m_is_cancled = false;
     m_is_finished = false;
@@ -54,11 +54,11 @@ std::string rpcController::GetErrorInfo() {
   return m_error_info;
 }
 
-void rpcController::SetReqId(const std::string& req_id) {
-  m_req_id = req_id;
+void rpcController::SetMsgId(const std::string& msg_id) {
+  m_msg_id = msg_id;
 }
-std::string rpcController::GetReqId() {
-  return m_req_id;
+std::string rpcController::GetMsgId() {
+  return m_msg_id;
 }
 
 void rpcController::SetLocalAddr(netAddr::s_ptr addr) {

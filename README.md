@@ -38,3 +38,6 @@ RPC服务端流程
 4.将请求体里面的pb_data反序列化为request type的一个对象，声明一个空的response type 对象
 5.func(request, response)
 6.将response对象序列化为pb_data，再塞入到tinyPBProtocol结构体中，做encode塞入buffer里面发送回包
+
+RPCChannel
+客户端调用服务端的远程方法，用于客户端跟服务端通信

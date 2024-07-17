@@ -90,11 +90,11 @@ void tcpClient::write_msg(abstractProtocol::s_ptr message, std::function<void(ab
     m_connection->push_send_msg(message, done);
     m_connection->listen_write_event();
 }
-void tcpClient::read_msg(const std::string& req_id, std::function<void(abstractProtocol::s_ptr)> done)
+void tcpClient::read_msg(const std::string& msg_id, std::function<void(abstractProtocol::s_ptr)> done)
 {
     //1.监听可读事件
-    //2.从buffer里decode得到message对象，判断是否req_id相等，相等则执行回调
-    m_connection->push_read_msg(req_id, done);
+    //2.从buffer里decode得到message对象，判断是否msg_id相等，相等则执行回调
+    m_connection->push_read_msg(msg_id, done);
     m_connection->listen_read_event();
 }
 

@@ -28,7 +28,7 @@ void test_tcp_client()
         std::shared_ptr<kabi::tinyPBProtocol> message = std::make_shared<kabi::tinyPBProtocol>();
         //message->info = "hello my kabi!";
         message->m_pb_data = "test pb data";
-        message->m_req_id = "123456";
+        message->m_msg_id = "123456";
 
         makeOrderRequest request;
         request.set_price(100);
@@ -46,7 +46,7 @@ void test_tcp_client()
         client.read_msg("123456", [](kabi::abstractProtocol::s_ptr msg_ptr){
             //std::shared_ptr<kabi::stringProtocol>message = std::dynamic_pointer_cast<kabi::stringProtocol>(msg_ptr); 
             std::shared_ptr<kabi::tinyPBProtocol> message = std::dynamic_pointer_cast<kabi::tinyPBProtocol>(msg_ptr);
-            DEBUGLOG("req_id %s, get response %s", message->m_req_id.c_str(), message->m_pb_data.c_str());
+            DEBUGLOG("msg_id %s, get response %s", message->m_msg_id.c_str(), message->m_pb_data.c_str());
             makeOrderResponse response;
             if(!response.ParseFromString(message->m_pb_data))
             {
