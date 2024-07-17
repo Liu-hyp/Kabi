@@ -5,10 +5,13 @@
 #include "tcp_connection.h"
 #include "../coder/abstract_protocol.h"
 #include <functional>
+#include <memory>
 namespace kabi
 {
 class tcpClient
 {
+public:
+    typedef std::shared_ptr<tcpClient> s_ptr;
 public:
     tcpClient(netAddr::s_ptr peer_addr);
     ~tcpClient();

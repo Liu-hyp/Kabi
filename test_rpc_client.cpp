@@ -18,6 +18,9 @@
 #include "net/coder/tinypb_coder.h"
 #include "net/coder/tinypb_protocol.h"
 #include "order.pb.h"
+#include "net/rpc/rpc_channel.h"
+#include "net/rpc/rpc_controller.h"
+#include "net/rpc/rpc_closure.h"
 void test_tcp_client()
 {
     kabi::ipNetAddr::s_ptr addr = std::make_shared<kabi::ipNetAddr>("192.168.247.128", 8080);
@@ -57,12 +60,31 @@ void test_tcp_client()
         });
     });
 }
+void test_rpc_channel()
+{
+    kabi::ipNetAddr::s_ptr addr = std::make_shared<kabi::ipNetAddr>("192.168.247.128", 8080);
+    std::shared_ptr<kabi::rpcChannel> channel = std::make_shared<kabi::rpcChannel>(addr);
+    std::shared_ptr<makeOrderRequest> request = std::make_shared<makeOrderRequest>();
+    request->set_price(100);
+    request->set_goods("apple");
+    std::shared_ptr<makeOrderResponse> response = std::make_shared<makeOrderResponse>();
+    std::shared_ptr<kabi::rpcController> controller = std::make_shared<kabi::rpcController>();
+    controller->SetMsgId("123456777");
+    std::shared_ptr<kabi::RpcClosure> closure = std::make_shared<kabi::RpcClosure>([request, response]() {
+        INFOLOG("call rpc success, request[%s], response[%s]", request->ShortDebugString().c_str(), response->ShortDebugString().c_str());
+    });
+    channel->rpc_channel_init(controller, request, response, closure);
+    Order_Stub stub(channel.get());
+    stub.makeOrder(controller.get(), request.get(), response.get(), closure.get());
+}
 int main()
 {
     std::string xmlfile = "/mnt/hgfs/Share/Kabi/kabi.xml";
     kabi::config::set_global_config(xmlfile.c_str());
+    
     kabi::logger::init_global_logger();
     //test_connect();
-    test_tcp_client();
+    //test_tcp_client();
+    test_rpc_channel();
     return 0;
 }

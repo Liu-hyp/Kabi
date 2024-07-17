@@ -9,7 +9,7 @@ namespace kabi {
 
 class RpcClosure : public google::protobuf::Closure {
 public:
-
+  RpcClosure(std::function<void()> cb) : m_cb(cb) {};
   void Run() override 
   {
     // 更新 runtime 的 RpcInterFace, 这里在执行 cb 的时候，都会以 RpcInterface 找到对应的接口，实现打印 app 日志等

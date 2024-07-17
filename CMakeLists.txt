@@ -11,7 +11,7 @@ add_library(${PROJECT_NAME}_core src/config.cpp src/log.cpp src/util.cpp net/eve
 net/tcp/tcpbuffer.cpp net/tcp/net_addr.cpp net/tcp/tcp_acceptor.cpp net/tcp/tcp_server.cpp net/tcp/tcp_connection.cpp net/fd_event_group.cpp net/tcp/tcp_client.cpp
 net/coder/tinypb_coder.cpp net/coder/tinypb_protocol.cpp
 net/rpc/rpc_controller.cpp net/rpc/rpc_dispatcher.cpp
-order.pb.cc)
+order.pb.cc src/msg_util.cpp net/rpc/rpc_channel.cpp)
 link_directories((${PROJECT_SOURCE_DIR}/lib))
 target_link_libraries(${PROJECT_NAME}_core libtinyxml.a)
 #add_executable(${PROJECT_NAME} test_client.cpp)
