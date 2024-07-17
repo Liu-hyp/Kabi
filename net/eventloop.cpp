@@ -140,6 +140,7 @@ void eventloop::deal_wakeup()
 void eventloop::stop()
 {
     m_stop_flag = true;
+    wakeup();
 }
 void eventloop::add_epoll_event(fdEvent* event)
 {

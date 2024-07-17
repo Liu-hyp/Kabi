@@ -70,8 +70,10 @@ void test_rpc_channel()
     std::shared_ptr<makeOrderResponse> response = std::make_shared<makeOrderResponse>();
     std::shared_ptr<kabi::rpcController> controller = std::make_shared<kabi::rpcController>();
     controller->SetMsgId("123456777");
-    std::shared_ptr<kabi::RpcClosure> closure = std::make_shared<kabi::RpcClosure>([request, response]() {
+    std::shared_ptr<kabi::RpcClosure> closure = std::make_shared<kabi::RpcClosure>([request, response, channel]() mutable {
         INFOLOG("call rpc success, request[%s], response[%s]", request->ShortDebugString().c_str(), response->ShortDebugString().c_str());
+        channel->getTcpClient()->stop();
+        channel.reset();
     });
     channel->rpc_channel_init(controller, request, response, closure);
     Order_Stub stub(channel.get());

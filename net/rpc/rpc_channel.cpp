@@ -58,12 +58,12 @@ void rpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
         return;
     }
     s_ptr channel = shared_from_this();
-    tcpClient client(m_peer_addr);
-    client.tcp_connect([&client, req_protocol, channel]()mutable {
-        client.write_msg(req_protocol, [&client, req_protocol, channel](abstractProtocol::s_ptr)mutable
+    m_client = std::make_shared<tcpClient>(m_peer_addr);
+    m_client->tcp_connect([req_protocol, channel]()mutable {
+        channel->getTcpClient()->write_msg(req_protocol, [req_protocol, channel](abstractProtocol::s_ptr)mutable
         {
             INFOLOG("[%s] | send request success, call method name[%s]", req_protocol->m_msg_id.c_str(), req_protocol->m_method_name.c_str());
-            client.read_msg(req_protocol->m_msg_id, [channel](abstractProtocol::s_ptr msg_ptr) mutable {
+            channel->getTcpClient()->read_msg(req_protocol->m_msg_id, [channel](abstractProtocol::s_ptr msg_ptr) mutable {
                 std::shared_ptr<kabi::tinyPBProtocol> rsp_protocol = std::dynamic_pointer_cast<kabi::tinyPBProtocol>(msg_ptr);
                 INFOLOG("[%s] | get response , call method name [%s]", rsp_protocol->m_msg_id.c_str(), rsp_protocol->m_method_name.c_str());
                 rpcController* m_controller = dynamic_cast<rpcController*>(channel->getController());
