@@ -16,8 +16,8 @@ link_directories((${PROJECT_SOURCE_DIR}/lib))
 target_link_libraries(${PROJECT_NAME}_core libtinyxml.a)
 #add_executable(${PROJECT_NAME} test_client.cpp)
 #add_executable(${PROJECT_NAME} test_tcp.cpp)
-add_executable(${PROJECT_NAME} test_rpc_client.cpp)
-#add_executable(${PROJECT_NAME} test_rpc_server.cpp)
+#add_executable(${PROJECT_NAME} test_rpc_client.cpp)
+add_executable(${PROJECT_NAME} test_rpc_server.cpp)
 #链接操作
 target_link_libraries(${PROJECT_NAME} Kabi_core ${Protobuf_LIBRARY})
 
