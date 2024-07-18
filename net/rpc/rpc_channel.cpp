@@ -10,6 +10,7 @@
 #include <memory>
 #include <string>
 #include "../../include/error_code.h"
+#include "../timer_event.h"
 namespace kabi
 {
 rpcChannel::rpcChannel(netAddr::s_ptr peer_addr):m_peer_addr(peer_addr)
@@ -59,6 +60,18 @@ void rpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
         return;
     }
     s_ptr channel = shared_from_this();
+    m_timer_event = std::make_shared<timerEvent>(m_controller->GetTimeout(), false, [m_controller, channel]()mutable{
+        //超时只需要取消rpc
+        m_controller->StartCancel();
+        m_controller->SetError(ERROR_RPC_CALL_TIMEOUT, "rpc call timeout" + std::to_string(m_controller->GetTimeout()));
+        //执行客户端回调
+        if(channel->getClosure())
+        {
+            channel->getClosure()->Run();
+        }
+        channel.reset();
+    });
+    m_client->add_timer_event(m_timer_event);
     
     m_client->tcp_connect([req_protocol, channel]()mutable {
         rpcController* m_controller = dynamic_cast<rpcController*>(channel->getController());
@@ -78,6 +91,9 @@ void rpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
                 INFOLOG("[%s] | success get response , call method name [%s], peer_addr[%s], local_addr[%s]", rsp_protocol->m_msg_id.c_str(), rsp_protocol->m_method_name.c_str(),
                     channel->getTcpClient()->get_peer_addr()->toString().c_str(), channel->getTcpClient()->get_local_addr()->toString().c_str());
                 
+                //取消定时器，取消以后当成功读取到回包后，定时任务即使到达时间也不会调用
+                channel->get_timer_event()->set_cancel(true);
+                
                 if(!channel->getResponse()->ParseFromString(rsp_protocol->m_pb_data))
                 {
                     ERRORLOG("[%s] | serialize error", rsp_protocol->m_msg_id.c_str());
@@ -92,7 +108,8 @@ void rpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
                 }
                 INFOLOG("[%s] | call rpc sucess, call method name[%s], peer_addr[%s], local_addr[%s]", rsp_protocol->m_msg_id.c_str(), rsp_protocol->m_method_name.c_str(),
                     channel->getTcpClient()->get_peer_addr()->toString().c_str(), channel->getTcpClient()->get_local_addr()->toString().c_str());
-                if(channel->getClosure())
+                
+                if(!m_controller->IsCanceled() && channel->getClosure())
                 {
                     channel->getClosure()->Run();
                 }
@@ -140,4 +157,9 @@ tcpClient* rpcChannel::getTcpClient()
 {
     return m_client.get();
 }
+timerEvent::s_ptr rpcChannel::get_timer_event()
+{
+    return m_timer_event;
+}
+
 }

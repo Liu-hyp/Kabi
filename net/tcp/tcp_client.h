@@ -7,6 +7,7 @@
 #include <functional>
 #include <memory>
 #include "../../include/error_code.h"
+#include "../timer_event.h"
 namespace kabi
 {
 class tcpClient
@@ -30,6 +31,8 @@ public:
     netAddr::s_ptr get_peer_addr();
     netAddr::s_ptr get_local_addr();
     void init_local_addr();
+    void add_timer_event(timerEvent::s_ptr timer_event);
+public:
     int m_connect_error_code {0};
     std::string m_connect_error_info;
 

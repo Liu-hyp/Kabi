@@ -8,6 +8,23 @@
 #include "../timer_event.h"
 
 namespace kabi {
+
+#define NEWMESSAGE(type, var_name) \
+  std::shared_ptr<type> var_name = std::make_shared<type>(); \
+
+#define NEWRPCCONTROLLER(var_name) \
+  std::shared_ptr<kabi::rpcController> var_name = std::make_shared<kabi::rpcController>(); \
+
+#define NEWRPCCHANNEL(addr, var_name) \
+  std::shared_ptr<kabi::rpcChannel> var_name = std::make_shared<kabi::rpcChannel>(std::make_shared<kabi::ipNetAddr>(addr)); \
+
+#define CALLRPRC(addr, method_name, controller, request, response, closure) \
+  { \
+  NEWRPCCHANNEL(addr, channel); \
+  channel->rpc_channel_init(controller, request, response, closure); \
+  Order_Stub(channel.get()).method_name(controller.get(), request.get(), response.get(), closure.get()); \
+  } \
+
 class rpcChannel : public google::protobuf::RpcChannel, public std::enable_shared_from_this<rpcChannel> 
 {
 public:
@@ -32,6 +49,8 @@ public:
     google::protobuf::Closure* getClosure();
 
     tcpClient* getTcpClient();
+
+    timerEvent::s_ptr get_timer_event();
 private:
     netAddr::s_ptr m_peer_addr {nullptr};
     netAddr::s_ptr m_local_peer {nullptr};
@@ -41,6 +60,7 @@ private:
     closure_s_ptr m_closure {nullptr};
     tcpClient::s_ptr m_client {nullptr};
     bool m_is_init {false};
+    timerEvent::s_ptr m_timer_event{nullptr};
 
 };
 

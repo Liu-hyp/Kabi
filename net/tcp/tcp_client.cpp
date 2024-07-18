@@ -185,5 +185,9 @@ void tcpClient::init_local_addr()
     }
     m_local_addr = std::make_shared<ipNetAddr>(local_addr);
 }
+void tcpClient::add_timer_event(timerEvent::s_ptr timer_event)
+{
+    m_event_loop->add_timer_event(timer_event);
+}
 
 }

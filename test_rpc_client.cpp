@@ -62,22 +62,40 @@ void test_tcp_client()
 }
 void test_rpc_channel()
 {
-    kabi::ipNetAddr::s_ptr addr = std::make_shared<kabi::ipNetAddr>("192.168.247.128", 8080);
-    std::shared_ptr<kabi::rpcChannel> channel = std::make_shared<kabi::rpcChannel>(addr);
-    std::shared_ptr<makeOrderRequest> request = std::make_shared<makeOrderRequest>();
+    //kabi::ipNetAddr::s_ptr addr = std::make_shared<kabi::ipNetAddr>("192.168.247.128", 8080);
+    //std::shared_ptr<kabi::rpcChannel> channel = std::make_shared<kabi::rpcChannel>(addr);
+    //std::shared_ptr<makeOrderRequest> request = std::make_shared<makeOrderRequest>();
+    NEWRPCCHANNEL("192.168.247.128:8080", channel);
+    NEWMESSAGE(makeOrderRequest, request);
+    NEWMESSAGE(makeOrderResponse, response);
     request->set_price(100);
     request->set_goods("apple");
-    std::shared_ptr<makeOrderResponse> response = std::make_shared<makeOrderResponse>();
-    std::shared_ptr<kabi::rpcController> controller = std::make_shared<kabi::rpcController>();
+    //std::shared_ptr<makeOrderResponse> response = std::make_shared<makeOrderResponse>();
+    //std::shared_ptr<kabi::rpcController> controller = std::make_shared<kabi::rpcController>();
+    NEWRPCCONTROLLER(controller);
     controller->SetMsgId("123456777");
-    std::shared_ptr<kabi::RpcClosure> closure = std::make_shared<kabi::RpcClosure>([request, response, channel]() mutable {
-        INFOLOG("call rpc success, request[%s], response[%s]", request->ShortDebugString().c_str(), response->ShortDebugString().c_str());
+    controller->SetTimeout(10000);
+    std::shared_ptr<kabi::RpcClosure> closure = std::make_shared<kabi::RpcClosure>([request, response, channel, controller]() mutable {
+        if(controller->GetErrorCode() == 0)
+        {
+            INFOLOG("call rpc success, request[%s], response[%s]", request->ShortDebugString().c_str(), response->ShortDebugString().c_str());
+            //执行业务逻辑
+            //if(response->order_id() == xxx)
+        }
+        else
+        {
+            ERRORLOG("call rpc failed, request[%s], error code[%d], error info[%s]", request->ShortDebugString().c_str(), controller->GetErrorCode(),
+                controller->GetErrorInfo().c_str());
+        }
+        
         channel->getTcpClient()->stop();
         channel.reset();
     });
-    channel->rpc_channel_init(controller, request, response, closure);
-    Order_Stub stub(channel.get());
-    stub.makeOrder(controller.get(), request.get(), response.get(), closure.get());
+    // channel->rpc_channel_init(controller, request, response, closure);
+    // Order_Stub stub(channel.get());
+    // //在这里调用rpc时，虽然是异步的。但也不希望无限期的去等他的结果，所以说给一个超时时间
+    // stub.makeOrder(controller.get(), request.get(), response.get(), closure.get());
+    CALLRPRC("192.168.247.128:8080", makeOrder, controller, request, response, closure);
 }
 int main()
 {
