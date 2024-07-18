@@ -92,7 +92,7 @@ void rpcDispatcher::dispatch(abstractProtocol::s_ptr request, abstractProtocol::
         return;
     }
     rsp_protocol->m_err_code = 0;
-    INFOLOG("[%s] | dispatch success, request[%s], response[%s]",rsp_protocol->m_msg_id, req_msg->ShortDebugString().c_str(), rsp_msg->ShortDebugString().c_str());
+    INFOLOG("[%s] | dispatch success, request[%s], response[%s]",rsp_protocol->m_msg_id.c_str(), req_msg->ShortDebugString().c_str(), rsp_msg->ShortDebugString().c_str());
     if(req_msg != NULL)
     {
         delete req_msg;

@@ -8,12 +8,13 @@
 #include "rpc_controller.h"
 #include "../tcp/tcp_client.h"
 #include <memory>
+#include <string>
 #include "../../include/error_code.h"
 namespace kabi
 {
 rpcChannel::rpcChannel(netAddr::s_ptr peer_addr):m_peer_addr(peer_addr)
 {
-
+    m_client = std::make_shared<tcpClient>(m_peer_addr);
 }
 rpcChannel::~rpcChannel()
 {
@@ -58,27 +59,39 @@ void rpcChannel::CallMethod(const google::protobuf::MethodDescriptor* method,
         return;
     }
     s_ptr channel = shared_from_this();
-    m_client = std::make_shared<tcpClient>(m_peer_addr);
+    
     m_client->tcp_connect([req_protocol, channel]()mutable {
-        channel->getTcpClient()->write_msg(req_protocol, [req_protocol, channel](abstractProtocol::s_ptr)mutable
+        rpcController* m_controller = dynamic_cast<rpcController*>(channel->getController());
+        if(channel->getTcpClient()->get_connect_error_code() != 0)
         {
-            INFOLOG("[%s] | send request success, call method name[%s]", req_protocol->m_msg_id.c_str(), req_protocol->m_method_name.c_str());
-            channel->getTcpClient()->read_msg(req_protocol->m_msg_id, [channel](abstractProtocol::s_ptr msg_ptr) mutable {
+            m_controller->SetError(channel->getTcpClient()->get_connect_error_code(), channel->getTcpClient()->get_connect_error_info());
+            ERRORLOG("[%s] | connect error, error code [%d], error info [%s], peer_addr [%s]", req_protocol->m_msg_id.c_str(),
+                m_controller->GetErrorCode(), m_controller->GetErrorInfo().c_str(), channel->getTcpClient()->get_peer_addr()->toString().c_str());
+            return;
+        }
+        channel->getTcpClient()->write_msg(req_protocol, [req_protocol, channel, m_controller](abstractProtocol::s_ptr)mutable
+        {
+            INFOLOG("[%s] | send request success, call method name[%s], peer_addr[%s], local_addr[%s]", req_protocol->m_msg_id.c_str(), req_protocol->m_method_name.c_str(),
+                channel->getTcpClient()->get_peer_addr()->toString().c_str(), channel->getTcpClient()->get_local_addr()->toString().c_str());
+            channel->getTcpClient()->read_msg(req_protocol->m_msg_id, [channel, m_controller](abstractProtocol::s_ptr msg_ptr) mutable {
                 std::shared_ptr<kabi::tinyPBProtocol> rsp_protocol = std::dynamic_pointer_cast<kabi::tinyPBProtocol>(msg_ptr);
-                INFOLOG("[%s] | get response , call method name [%s]", rsp_protocol->m_msg_id.c_str(), rsp_protocol->m_method_name.c_str());
-                rpcController* m_controller = dynamic_cast<rpcController*>(channel->getController());
+                INFOLOG("[%s] | success get response , call method name [%s], peer_addr[%s], local_addr[%s]", rsp_protocol->m_msg_id.c_str(), rsp_protocol->m_method_name.c_str(),
+                    channel->getTcpClient()->get_peer_addr()->toString().c_str(), channel->getTcpClient()->get_local_addr()->toString().c_str());
+                
                 if(!channel->getResponse()->ParseFromString(rsp_protocol->m_pb_data))
                 {
-                    ERRORLOG("[%s] | serialize error", rsp_protocol->m_msg_id);
+                    ERRORLOG("[%s] | serialize error", rsp_protocol->m_msg_id.c_str());
                     m_controller->SetError(ERROR_FAILED_SERIALIZE, "serialize error");
                     return;
                 }
                 if(rsp_protocol->m_err_code != 0)
                 {
-                    ERRORLOG("[%s] | call rpc failed, error code[%d], error info[%s]", rsp_protocol->m_msg_id, rsp_protocol->m_err_code, rsp_protocol->m_err_info);
+                    ERRORLOG("[%s] | call rpc failed, error code[%d], error info[%s]", rsp_protocol->m_msg_id.c_str(), rsp_protocol->m_err_code, rsp_protocol->m_err_info.c_str());
                     m_controller->SetError(rsp_protocol->m_err_code, rsp_protocol->m_err_info);
                     return;
                 }
+                INFOLOG("[%s] | call rpc sucess, call method name[%s], peer_addr[%s], local_addr[%s]", rsp_protocol->m_msg_id.c_str(), rsp_protocol->m_method_name.c_str(),
+                    channel->getTcpClient()->get_peer_addr()->toString().c_str(), channel->getTcpClient()->get_local_addr()->toString().c_str());
                 if(channel->getClosure())
                 {
                     channel->getClosure()->Run();

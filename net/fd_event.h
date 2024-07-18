@@ -11,6 +11,7 @@ public:
     {
         IN_EVENT = EPOLLIN,
         OUT_EVENT = EPOLLOUT,
+        ERROR_EVENT = EPOLLERR,
     };
     fdEvent(int fd);
     fdEvent();
@@ -18,7 +19,7 @@ public:
     void set_nonblock();
     std::function<void()> handler(FdTriggerEvent event_type);
 
-    void listen(FdTriggerEvent event_type, std::function<void()> callback);
+    void listen(FdTriggerEvent event_type, std::function<void()> callback, std::function<void()>error_callback = nullptr);
     //取消监听
     void cancel(FdTriggerEvent event_type);
     int get_fd() const{return m_fd;}
@@ -29,8 +30,9 @@ public:
 protected:
     int m_fd {-1};
     epoll_event m_listen_events;
-    std::function<void()> m_read_callback;
-    std::function<void()> m_write_callback;
+    std::function<void()> m_read_callback {nullptr};
+    std::function<void()> m_write_callback {nullptr};
+    std::function<void()> m_error_callback {nullptr};
 };
 }
 #endif //KABI_NET_FD_EVENT_H

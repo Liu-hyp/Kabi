@@ -120,6 +120,17 @@ void eventloop::loop()
                     DEBUGLOG("fd[%d] trigger in EPOLLOUT event", fd_event->get_fd());
                     add_task(fd_event->handler(fdEvent::FdTriggerEvent::OUT_EVENT));
                 }
+                if(trigger_event.events & EPOLLERR)
+                {
+                    DEBUGLOG("fd[%d] trigger in EPOLLERR event", fd_event->get_fd());
+                    //删除出错的套接字
+                    del_epoll_event(fd_event);
+                    if(fd_event->handler(fdEvent::FdTriggerEvent::ERROR_EVENT) != nullptr)
+                    {
+                        DEBUGLOG("fd %d add error callback", fd_event->get_fd());
+                        add_task(fd_event->handler(fdEvent::FdTriggerEvent::OUT_EVENT));
+                    }
+                }
             }
         }        
     }

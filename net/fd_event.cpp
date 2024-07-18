@@ -21,9 +21,14 @@ std::function<void()> fdEvent::handler(FdTriggerEvent event_type)
     {
         return m_write_callback;
     }
+    else if(event_type == FdTriggerEvent::ERROR_EVENT)
+    {
+        return m_error_callback;
+    }
+    return nullptr;
 
 }
-void fdEvent::listen(FdTriggerEvent event_type, std::function<void()> callback)
+void fdEvent::listen(FdTriggerEvent event_type, std::function<void()> callback, std::function<void()> error_callback /*=nullptr*/)
 {
     if(event_type == FdTriggerEvent::IN_EVENT)
     {
@@ -34,6 +39,13 @@ void fdEvent::listen(FdTriggerEvent event_type, std::function<void()> callback)
     {
         m_listen_events.events |= EPOLLOUT;        
         m_write_callback = callback;       
+    }
+    if(m_error_callback == nullptr)
+    {
+        m_error_callback = error_callback;
+    }else
+    {
+        m_error_callback = nullptr;
     }
     m_listen_events.data.ptr = this;
     
