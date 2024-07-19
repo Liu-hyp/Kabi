@@ -7,6 +7,7 @@
 #include "rpc_controller.h"
 #include "../tcp/net_addr.h"
 #include "../tcp/tcp_connection.h"
+#include "../../include/runtime.h"
 namespace kabi
 {
 static rpcDispatcher* g_rpc_dispatcher = NULL;
@@ -73,7 +74,9 @@ void rpcDispatcher::dispatch(abstractProtocol::s_ptr request, abstractProtocol::
     rpc_controller.SetLocalAddr(connection->get_local_addr());
     rpc_controller.SetPeerAddr(connection->get_peer_addr());
     rpc_controller.SetMsgId(req_protocol->m_msg_id);
-
+    //进入rpc业务处理
+    runTime::GetRunTime()->m_msgid = req_protocol->m_msg_id;
+    runTime::GetRunTime()->m_method_name = method_name;
     service->CallMethod(method, &rpc_controller, req_msg, rsp_msg, NULL);   
     if(!rsp_msg->SerializeToString(&(rsp_protocol->m_pb_data)))
     {

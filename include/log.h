@@ -228,21 +228,21 @@ if(kabi::logger::get_global_logger()->get_log_level() <= kabi::LOGLEVEL::ERROR) 
 #define APPDEBUGLOG(str, ...)\
     if(kabi::logger::get_global_logger()->get_log_level() <= kabi::LOGLEVEL::DEBUG) \
     {\
-        kabi::logger::get_global_logger()->push_log((kabi::logEvent(kabi::LOGLEVEL::DEBUG)).to_string() \
+        kabi::logger::get_global_logger()->push_app_log((kabi::logEvent(kabi::LOGLEVEL::DEBUG)).to_string() \
         + "[" + std::string(__FILE__) + ":" + std::to_string(__LINE__) + "]\t" + kabi::format_string(str, ##__VA_ARGS__) + "\n"); \   
     }\
 
 #define APPINFOLOG(str, ...)\
 if(kabi::logger::get_global_logger()->get_log_level() <= kabi::LOGLEVEL::INFO) \
 {\
-    kabi::logger::get_global_logger()->push_log((kabi::logEvent(kabi::LOGLEVEL::INFO)).to_string() \
+    kabi::logger::get_global_logger()->push_app_log((kabi::logEvent(kabi::LOGLEVEL::INFO)).to_string() \
     + "[" + std::string(__FILE__) + ":" + std::to_string(__LINE__) + "]\t" + kabi::format_string(str, ##__VA_ARGS__) + "\n"); \
 }\
 
 #define APPERRORLOG(str, ...)\
 if(kabi::logger::get_global_logger()->get_log_level() <= kabi::LOGLEVEL::ERROR) \
 {\
-    kabi::logger::get_global_logger()->push_log((kabi::logEvent(kabi::LOGLEVEL::ERROR)).to_string() \
+    kabi::logger::get_global_logger()->push_app_log((kabi::logEvent(kabi::LOGLEVEL::ERROR)).to_string() \
     + "[" + std::string(__FILE__) + ":" + std::to_string(__LINE__) + "]\t" + kabi::format_string(str, ##__VA_ARGS__) + "\n"); \
 }\
 

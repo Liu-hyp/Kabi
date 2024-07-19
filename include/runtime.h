@@ -3,20 +3,20 @@
 #include <string>
 namespace kabi
 {
-class RpcInterface;
+//class rpcInterface;
 
-class RunTime {
+class runTime {
 public:
-    RpcInterface* getRpcInterface();
+    //rpcInterface* get_rpc_interface();
 
 public:
-    static RunTime* GetRunTime();
+    static runTime* GetRunTime();
 
 
 public:
     std::string m_msgid;
     std::string m_method_name;
-    RpcInterface* m_rpc_interface {NULL};
+    //rpcInterface* m_rpc_interface {NULL};
 };
 
 }

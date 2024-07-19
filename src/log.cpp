@@ -1,5 +1,6 @@
 #include "log.h"
 #include "../net/eventloop.h"
+#include "runtime.h"
 
 namespace kabi{
 //logger* logger::instance = nullptr;
@@ -17,7 +18,7 @@ logger::logger(LOGLEVEL level, int type /*=1*/) : m_set_level(level), m_type(typ
         config::get_global_config()->m_log_file_path,
         config::get_global_config()->m_log_max_file_size);
     
-        m_asnyc_app_logger = std::make_shared<asyncLogger>(
+    m_asnyc_app_logger = std::make_shared<asyncLogger>(
         config::get_global_config()->m_log_file_name + "_app",
         config::get_global_config()->m_log_file_path,
         config::get_global_config()->m_log_max_file_size);
@@ -84,8 +85,19 @@ std::string logEvent::to_string()
     ss << "[" << kabi::log_level_to_string(m_level) << "]\t"
         << "[" << time_str << "]\t"
         << "[" << m_pid << ":" << m_thread_id << "]\t";
-    return ss.str();
+    
     //获取当前线程处理的请求的msgid
+    std::string msgid = runTime::GetRunTime()->m_msgid;
+    std::string method_name = runTime::GetRunTime()->m_method_name;
+    if(!msgid.empty())
+    {
+        ss << "[" << msgid << "]\t";
+    }
+    if(!method_name.empty())
+    {
+        ss << "[" << method_name << "]\t";
+    }
+    return ss.str();
 }
 
 void logger::push_log(const std::string& msg)
