@@ -6,18 +6,21 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
 find_package(Protobuf REQUIRED)
 
 include_directories(${Protobuf_INCLUDE_DIR}
-    ${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/net ${PROJECT_SOURCE_DIR}/net/tcp ${PROJECT_SOURCE_DIR}/net/coder)
-add_library(${PROJECT_NAME}_core src/config.cpp src/log.cpp src/util.cpp net/eventloop.cpp net/fd_event.cpp net/wakeup_fd_event.cpp net/timer_event.cpp net/timer.cpp net/io_thread.cpp net/io_thread_group.cpp
-net/tcp/tcpbuffer.cpp net/tcp/net_addr.cpp net/tcp/tcp_acceptor.cpp net/tcp/tcp_server.cpp net/tcp/tcp_connection.cpp net/fd_event_group.cpp net/tcp/tcp_client.cpp
-net/coder/tinypb_coder.cpp net/coder/tinypb_protocol.cpp
-net/rpc/rpc_controller.cpp net/rpc/rpc_dispatcher.cpp
-order.pb.cc src/msg_util.cpp net/rpc/rpc_channel.cpp src/runtime.cpp)
-link_directories((${PROJECT_SOURCE_DIR}/lib))
+    ${PROJECT_SOURCE_DIR}/kabisrc/include ${PROJECT_SOURCE_DIR}/kabisrc/net ${PROJECT_SOURCE_DIR}/kabisrc/net/tcp ${PROJECT_SOURCE_DIR}/kabisrc/net/coder)
+
+add_library(${PROJECT_NAME}_core kabisrc/include/config.cpp kabisrc/include/log.cpp kabisrc/include/util.cpp kabisrc/net/eventloop.cpp kabisrc/net/fd_event.cpp kabisrc/net/wakeup_fd_event.cpp 
+    kabisrc/net/timer_event.cpp kabisrc/net/timer.cpp kabisrc/net/io_thread.cpp kabisrc/net/io_thread_group.cpp
+    kabisrc/net/tcp/tcpbuffer.cpp kabisrc/net/tcp/net_addr.cpp kabisrc/net/tcp/tcp_acceptor.cpp kabisrc/net/tcp/tcp_server.cpp kabisrc/net/tcp/tcp_connection.cpp kabisrc/net/fd_event_group.cpp kabisrc/net/tcp/tcp_client.cpp
+    kabisrc/net/coder/tinypb_coder.cpp kabisrc/net/coder/tinypb_protocol.cpp
+    kabisrc/net/rpc/rpc_controller.cpp kabisrc/net/rpc/rpc_dispatcher.cpp
+    testcases/order.pb.cc kabisrc/include/msg_util.cpp kabisrc/net/rpc/rpc_channel.cpp kabisrc/include/runtime.cpp)
+
+link_directories((${PROJECT_SOURCE_DIR}/kabi/lib))
 target_link_libraries(${PROJECT_NAME}_core libtinyxml.a)
 #add_executable(${PROJECT_NAME} test_client.cpp)
 #add_executable(${PROJECT_NAME} test_tcp.cpp)
-add_executable(${PROJECT_NAME} test_rpc_client.cpp)
-#add_executable(${PROJECT_NAME} test_rpc_server.cpp)
+#add_executable(${PROJECT_NAME} testcases/test_rpc_client.cpp)
+add_executable(${PROJECT_NAME} testcases/test_rpc_server.cpp)
 #链接操作
 target_link_libraries(${PROJECT_NAME} Kabi_core ${Protobuf_LIBRARY})
 

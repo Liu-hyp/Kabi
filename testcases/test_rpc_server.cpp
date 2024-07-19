@@ -1,10 +1,10 @@
-#include "include/log.h"
-#include "net/tcp/net_addr.h"
-#include "net/tcp/tcp_server.h"
+#include "../kabisrc/include/log.h"
+#include "../kabisrc/net/tcp/net_addr.h"
+#include "../kabisrc/net/tcp/tcp_server.h"
 #include <memory>
 #include <google/protobuf/service.h>
 #include "order.pb.h"
-#include "net/rpc/rpc_dispatcher.h"
+#include "../kabisrc/net/rpc/rpc_dispatcher.h"
 class OrderImpl : public Order{
 public:
     void makeOrder(google::protobuf::RpcController* controller,

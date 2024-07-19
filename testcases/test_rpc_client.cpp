@@ -1,6 +1,6 @@
 #include <pthread.h>
-#include "include/log.h"
-#include "include/config.h"
+#include "../kabisrc/include/log.h"
+#include "../kabisrc/include/config.h"
 #include <assert.h>
 #include <fcntl.h>
 #include <string.h>
@@ -9,18 +9,18 @@
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <memory>
-#include "net/coder/abstract_protocol.h"
-#include "net/tcp/tcp_connection.h"
-#include "net/tcp/net_addr.h"
-#include "net/tcp/tcp_client.h"
+#include "../kabisrc/net/coder/abstract_protocol.h"
+#include "../kabisrc/net/tcp/tcp_connection.h"
+#include "../kabisrc/net/tcp/net_addr.h"
+#include "../kabisrc/net/tcp/tcp_client.h"
 //#include "net/coder/string_coder.h"
-#include "net/coder/abstract_protocol.h"
-#include "net/coder/tinypb_coder.h"
-#include "net/coder/tinypb_protocol.h"
+#include "../kabisrc/net/coder/abstract_protocol.h"
+#include "../kabisrc/net/coder/tinypb_coder.h"
+#include "../kabisrc/net/coder/tinypb_protocol.h"
 #include "order.pb.h"
-#include "net/rpc/rpc_channel.h"
-#include "net/rpc/rpc_controller.h"
-#include "net/rpc/rpc_closure.h"
+#include "../kabisrc/net/rpc/rpc_channel.h"
+#include "../kabisrc/net/rpc/rpc_controller.h"
+#include "../kabisrc/net/rpc/rpc_closure.h"
 void test_tcp_client()
 {
     kabi::ipNetAddr::s_ptr addr = std::make_shared<kabi::ipNetAddr>("192.168.247.128", 8080);
