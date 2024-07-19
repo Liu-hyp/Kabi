@@ -7,4 +7,9 @@
     <log_max_file_size>1000000000</log_max_file_size>
     <log_sync_interval>500</log_sync_interval>
   </log>
+
+  <server>
+    <port>8080</port>
+    <io_threads>4</io_threads>
+  </server>
 </root>

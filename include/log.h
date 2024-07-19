@@ -200,6 +200,8 @@ private:
     int32_t m_pid; //进程号
     int32_t m_thread_id; //线程号
     LOGLEVEL m_level; //日志级别   
+    int m_type {0};
+
 };
 
 }

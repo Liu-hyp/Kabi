@@ -38,14 +38,22 @@ void test_tcp_server()
     kabi::tcpServer tcp_server(addr);
     tcp_server.start();
 }
-int main()
+int main(int argc, char* argv[])
 {
-    std::string xmlfile = "/mnt/hgfs/Share/Kabi/kabi.xml";
-    kabi::config::set_global_config(xmlfile.c_str());
+    if(argc != 2)
+    {
+        printf("start test_rpc_server error, argc not 2 \n");
+        printf("Start like this: \n");
+        printf("./test_rpc_server ../conf/rocket.xml \n");
+        return 0;
+    }
+    //std::string xmlfile = "/mnt/hgfs/Share/Kabi/kabi.xml";
+    kabi::config::set_global_config(argv[1]);
     kabi::logger::init_global_logger();
     std::shared_ptr<OrderImpl> order_ptr = std::make_shared<OrderImpl>();
     kabi::rpcDispatcher::get_rpc_dispatcher()->register_service(order_ptr);
-    //test_connect();
-    test_tcp_server();
+    kabi::ipNetAddr::s_ptr addr = std::make_shared<kabi::ipNetAddr>("192.168.247.128", kabi::config::get_global_config()->m_port);
+    kabi::tcpServer tcp_server(addr);
+    tcp_server.start();
     return 0;
 }

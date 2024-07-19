@@ -100,9 +100,9 @@ void test_rpc_channel()
 int main()
 {
     std::string xmlfile = "/mnt/hgfs/Share/Kabi/kabi_client.xml";
-    kabi::config::set_global_config(xmlfile.c_str());
+    kabi::config::set_global_config(NULL);
     
-    kabi::logger::init_global_logger();
+    kabi::logger::init_global_logger(0);
     //test_connect();
     //test_tcp_client();
     test_rpc_channel();

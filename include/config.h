@@ -8,6 +8,7 @@ class config
 {
 public:
     config(const char* xmlfile);
+    config();
 public:
     static config* get_global_config();
     static void set_global_config(const char* xmlfile);

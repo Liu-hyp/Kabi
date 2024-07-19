@@ -24,8 +24,15 @@ config* config::get_global_config()
 }
 void config::set_global_config(const char* xmlfile)
 {
-    if(g_config == nullptr)
-        g_config = new config(xmlfile);
+    if (g_config == NULL) 
+    {
+        if (xmlfile != NULL) 
+        {
+            g_config = new config(xmlfile);
+        } else {
+            g_config = new config();
+        }
+    }
 }
 config::config(const char* xmlfile)
 {
@@ -38,6 +45,7 @@ config::config(const char* xmlfile)
     }
     READ_XML_NODE(root, xml_document); //去xml里面找到root节点
     READ_XML_NODE(log, root_node);
+    READ_XML_NODE(server, root_node)
     READ_STR_FROM_XML_NODE(log_level, log_node);
     READ_STR_FROM_XML_NODE(log_file_name, log_node);
     READ_STR_FROM_XML_NODE(log_file_path, log_node);
@@ -51,6 +59,15 @@ config::config(const char* xmlfile)
     m_log_level = log_level_str;
     printf("LOG -- CONFIG LEVEL[%s], FILE_NAME[%s],FILE_PATH[%s] MAX_FILE_SIZE[%d B], SYNC_INTEVAL[%d ms]\n", 
     m_log_level.c_str(), m_log_file_name.c_str(), m_log_file_path.c_str(), m_log_max_file_size, m_log_sync_inteval);
+    READ_STR_FROM_XML_NODE(port, server_node);
+    READ_STR_FROM_XML_NODE(io_threads, server_node);
+    m_port = std::atoi(port_str.c_str());
+    m_io_threads = std::atoi(io_threads_str.c_str());
+    printf("SERVER -- PORT[%d], IO_THREADS\n", m_port, m_io_threads);
+}
+config::config()
+{
+    m_log_level = "DEBUG";
 }
 
 }
