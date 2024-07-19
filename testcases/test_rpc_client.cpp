@@ -95,7 +95,7 @@ void test_rpc_channel()
     // Order_Stub stub(channel.get());
     // //在这里调用rpc时，虽然是异步的。但也不希望无限期的去等他的结果，所以说给一个超时时间
     // stub.makeOrder(controller.get(), request.get(), response.get(), closure.get());
-    CALLRPRC("192.168.247.128:8080", makeOrder, controller, request, response, closure);
+    CALLRPRC("192.168.247.128:8080", Order_Stub, makeOrder, controller, request, response, closure);
 }
 int main()
 {

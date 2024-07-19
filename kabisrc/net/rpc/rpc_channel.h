@@ -18,11 +18,11 @@ namespace kabi {
 #define NEWRPCCHANNEL(addr, var_name) \
   std::shared_ptr<kabi::rpcChannel> var_name = std::make_shared<kabi::rpcChannel>(std::make_shared<kabi::ipNetAddr>(addr)); \
 
-#define CALLRPRC(addr, method_name, controller, request, response, closure) \
+#define CALLRPRC(addr, stub_name, method_name, controller, request, response, closure) \
   { \
   NEWRPCCHANNEL(addr, channel); \
   channel->rpc_channel_init(controller, request, response, closure); \
-  Order_Stub(channel.get()).method_name(controller.get(), request.get(), response.get(), closure.get()); \
+  stub_name(channel.get()).method_name(controller.get(), request.get(), response.get(), closure.get()); \
   } \
 
 class rpcChannel : public google::protobuf::RpcChannel, public std::enable_shared_from_this<rpcChannel> 

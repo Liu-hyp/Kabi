@@ -1,6 +1,7 @@
 #include "tcp_server.h"
 #include "../../include/log.h"
 #include "tcp_connection.h"
+#include "../../include/config.h"
 namespace kabi
 {
 tcpServer::tcpServer(netAddr::s_ptr local_addr) : m_local_addr(local_addr)
@@ -26,7 +27,7 @@ void tcpServer::init()
     //tcpServer是全局的单例对象，只能由主线程去构建这个对象
     m_acceptor = std::make_shared<tcpAcceptor>(m_local_addr);
     m_main_event_loop = eventloop::get_current_event_loop();
-    m_io_thread_group = new ioThreadGroup(2);
+    m_io_thread_group = new ioThreadGroup(config::get_global_config()->m_io_threads);
     m_listen_fd_event = new fdEvent(m_acceptor->get_listen_fd());
     m_listen_fd_event->listen(fdEvent::FdTriggerEvent::IN_EVENT, std::bind(&tcpServer::on_accept, this));
     m_main_event_loop->add_epoll_event(m_listen_fd_event);   
