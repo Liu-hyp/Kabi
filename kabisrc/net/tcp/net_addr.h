@@ -1,5 +1,5 @@
-#ifndef KABI_NET_TCP_NET_ADDR_H
-#define KABI_NET_TCP_NET_ADDR_H
+#ifndef KABI_KABISRC_NET_TCP_NET_ADDR_H
+#define KABI_KABISRC_NET_TCP_NET_ADDR_H
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "arpa/inet.h"

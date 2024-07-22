@@ -1,5 +1,5 @@
-#ifndef KABI_NET_TCP_TCP_ACCEPTOR_H
-#define KABI_NET_TCP_TCP_ACCEPTOR_H
+#ifndef KABI_KABISRC_NET_TCP_TCP_ACCEPTOR_H
+#define KABI_KABISRC_NET_TCP_TCP_ACCEPTOR_H
 #include "net_addr.h"
 #include <memory>
 namespace kabi

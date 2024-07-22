@@ -1,5 +1,5 @@
-#ifndef KABI_NET_IO_THREAD_T
-#define KABI_NET_IO_THREAD_T
+#ifndef KABI_KABISRC_NET_IO_THREAD_T
+#define KABI_KABISRC_NET_IO_THREAD_T
 #include "eventloop.h"
 #include <semaphore.h>
 namespace kabi

@@ -1,5 +1,5 @@
-#ifndef KABI_NET_TCP_TCP_SERVER_H
-#define KABI_NET_TCP_TCP_SERVER_H
+#ifndef KABI_KABISRC_NET_TCP_TCP_SERVER_H
+#define KABI_KABISRC_NET_TCP_TCP_SERVER_H
 #include "tcp_acceptor.h"
 #include "net_addr.h"
 #include "../eventloop.h"

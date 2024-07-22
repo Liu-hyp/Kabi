@@ -1,5 +1,5 @@
 # Kabi
-- 可实现一键搭载高性能RPC服务器
+- 可实现一键搭载高性能RPC游戏服务器
 
 kabi采用的是主从Reactor模型， 有一个mainReactor和多个subReactor。
 mainReactor由主线程运行：通过epoll监听listenfd可读事件，当可读事件发生后，accept一个clientfd，然后随机读取一个subReactor，将clientfd的读写事件注册到subReactor的epoll上即可。

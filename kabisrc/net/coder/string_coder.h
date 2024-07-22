@@ -1,5 +1,5 @@
-#ifndef KABI_NET_STRING_CODER_H
-#define KABI_NET_STRING_CODER_H
+#ifndef KABI_KABISRC_NET_STRING_CODER_H
+#define KABI_KABISRC_NET_STRING_CODER_H
 #include "abstract_protocol.h"
 #include "abstract_coder.h"
 namespace kabi

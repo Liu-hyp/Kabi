@@ -1,5 +1,5 @@
-#ifndef KABI_NET_RPC_RPC_DISPATCHER_H
-#define KABI_NET_RPC_RPC_DISPATCHER_H
+#ifndef KABI_KABISRC_NET_RPC_RPC_DISPATCHER_H
+#define KABI_KABISRC_NET_RPC_RPC_DISPATCHER_H
 #include "../coder/abstract_protocol.h"
 #include "../coder/tinypb_protocol.h"
 #include <map>

@@ -1,5 +1,5 @@
-#ifndef KABI_NET_TCP_TCP_CLIENT_H
-#define KABI_NET_TCP_TCP_CLIENT_H
+#ifndef KABI_KABISRC_NET_TCP_TCP_CLIENT_H
+#define KABI_KABISRC_NET_TCP_TCP_CLIENT_H
 #include "net_addr.h"
 #include "../eventloop.h"
 #include "tcp_connection.h"
@@ -32,6 +32,7 @@ public:
     netAddr::s_ptr get_local_addr();
     void init_local_addr();
     void add_timer_event(timerEvent::s_ptr timer_event);
+    int get_client_fd() {return m_fd;}
 public:
     int m_connect_error_code {0};
     std::string m_connect_error_info;

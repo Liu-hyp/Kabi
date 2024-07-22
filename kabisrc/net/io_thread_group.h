@@ -1,5 +1,5 @@
-#ifndef KABI_NET_IO_THREAD_GROUP_H
-#define KABI_NET_IO_THREAD_GROUP_H
+#ifndef KABI_KABISRC_NET_IO_THREAD_GROUP_H
+#define KABI_KABISRC_NET_IO_THREAD_GROUP_H
 #include <vector>
 #include "../include/log.h"
 #include "io_thread.h"

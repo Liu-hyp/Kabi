@@ -1,7 +1,9 @@
 syntax = "proto3";
 option cc_generic_services = true;
-package pb;
+import "google/protobuf/descriptor.proto";
 
+// 定义消息ID的option
+extend google.protobuf.MessageOptions { MessageID MsgID = 50002; }
 //消息枚举
 enum MessageID
 {
@@ -16,16 +18,31 @@ enum MessageID
     MSG_LOGIN_REPLY = 1002;
     
 }
-message SynxPid
+enum Status
 {
+    OK = 0;
+    ERROR = 1;
+}
+message SyncPid
+{
+    option (MsgID) = MSG_SYNC_PID;
     int32 Pid = 1;
+    string username = 2;
+}
+message SyncPidResponse
+{
+    int32 ret_code = 1; //必须有的字段 业务错误码， 0代表成功
+    string res_info = 2; //业务错误信息
+    Status state = 3;
 }
 message Talk
 {
+    option (MsgID) = MSG_TALK;
     string Content = 1;
 }
 message Position
 {
+    option (MsgID) = MSG_POSITION;
     float X = 1;
     float Y = 2;
     float Z = 3;
@@ -33,6 +50,7 @@ message Position
 }
 message BroadCast
 {
+    option (MsgID) = MSG_BROADCAST;
     //Tp: 1 世界聊天, 2 坐标, 3 动作, 4 移动之后坐标信息更新
     int32 Pid=1;
     int32 Tp=2;
@@ -42,12 +60,15 @@ message BroadCast
         int32 ActionData=5;
     }
 }
-message SyncPid
+message SyncPid_A
 {
+    option (MsgID) = MSG_SYNCPID;
     int32 Pid=1;
+    string username=2;
 }
 message SyncPlayers
 {
+    option (MsgID) = MSG_SYNC_PLAYERS;
     //嵌套多个子消息类型Player的消息
     repeated Player ps=1;
 }
@@ -56,3 +77,7 @@ message Player
     int32 Pid=1;
     Position P=2;
 }
+service Login {
+    rpc makeLogin(SyncPid) returns (SyncPidResponse);
+  }
+

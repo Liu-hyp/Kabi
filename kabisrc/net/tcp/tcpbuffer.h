@@ -1,5 +1,5 @@
-#ifndef KABI_NET_TCP_TCPBUFFER_H
-#define KABI_NET_TCP_TCPBUFFER_H
+#ifndef KABI_KABISRC_NET_TCP_TCPBUFFER_H
+#define KABI_KABISRC_NET_TCP_TCPBUFFER_H
 #include <vector>
 #include <memory>
 namespace kabi

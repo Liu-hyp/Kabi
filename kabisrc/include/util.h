@@ -1,5 +1,5 @@
-#ifndef KABI_INCLUDE_UTIL_H
-#define KABI_INCLUDE_UTIL_H
+#ifndef KABI_KABISRC_INCLUDE_UTIL_H
+#define KABI_KABISRC_INCLUDE_UTIL_H
 #include <sys/types.h>
 #include <unistd.h>
 #include <sys/syscall.h>

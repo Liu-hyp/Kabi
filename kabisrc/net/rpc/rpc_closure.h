@@ -1,5 +1,5 @@
-#ifndef KABI_NET_RPC_RPC_CLOSURE_H
-#define KABI_NET_RPC_RPC_CLOSURE_H
+#ifndef KABI_KABISRC_NET_RPC_RPC_CLOSURE_H
+#define KABI_KABISRC_NET_RPC_RPC_CLOSURE_H
 
 #include <google/protobuf/stubs/callback.h>
 #include <functional>

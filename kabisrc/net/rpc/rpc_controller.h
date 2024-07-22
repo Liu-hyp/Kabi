@@ -1,5 +1,5 @@
-#ifndef KABI_NET_RPC_RPC_CONTROLLER_H
-#define KABI_NET_RPC_RPC_CONTROLLER_H
+#ifndef KABI_KABISRC_NET_RPC_RPC_CONTROLLER_H
+#define KABI_KABISRC_NET_RPC_RPC_CONTROLLER_H
 
 #include <google/protobuf/service.h>
 #include <google/protobuf/stubs/callback.h>

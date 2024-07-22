@@ -14,15 +14,18 @@ add_library(${PROJECT_NAME}_core kabisrc/include/config.cpp kabisrc/include/log.
     kabisrc/net/coder/tinypb_coder.cpp kabisrc/net/coder/tinypb_protocol.cpp
     kabisrc/net/rpc/rpc_controller.cpp kabisrc/net/rpc/rpc_dispatcher.cpp
     testcases/order.pb.cc kabisrc/include/msg_util.cpp kabisrc/net/rpc/rpc_channel.cpp kabisrc/include/runtime.cpp
-    kabisrc/game/AOI.cpp kabisrc/game/msg_api.cpp message.pb.cc)
+    kabisrc/net/game/AOI.cpp kabisrc/net/game/msg_api.cpp message.pb.cc kabisrc/net/game/game_role.cpp kabisrc/net/game/GameMsg.pb.cc)
 
-link_directories((${PROJECT_SOURCE_DIR}/kabi/lib))
+link_directories((${PROJECT_SOURCE_DIR}/kabisrc/lib))
 target_link_libraries(${PROJECT_NAME}_core libtinyxml.a)
 #add_executable(${PROJECT_NAME} test_client.cpp)
 #add_executable(${PROJECT_NAME} test_tcp.cpp)
 #add_executable(${PROJECT_NAME} testcases/test_rpc_client.cpp)
 #add_executable(${PROJECT_NAME} testcases/test_rpc_server.cpp)
-add_executable(${PROJECT_NAME} testcases/test_proto_Msg_option.cpp)
+add_executable(${PROJECT_NAME} testcases/test_game_client.cpp)
+#add_executable(${PROJECT_NAME} testcases/test_game_server.cpp)
 #链接操作
 target_link_libraries(${PROJECT_NAME} Kabi_core ${Protobuf_LIBRARY})
+#target_link_libraries(gameserver Kabi_core ${Protobuf_LIBRARY})
+#target_link_libraries(gameclient Kabi_core ${Protobuf_LIBRARY})
 

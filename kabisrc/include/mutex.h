@@ -1,5 +1,5 @@
-#ifndef KABI_INCLUDE_MUTEX_H
-#define KABI_INCLUDE_MUTEX_H
+#ifndef KABI_KABISRC_INCLUDE_MUTEX_H
+#define KABI_KABISRC_INCLUDE_MUTEX_H
 #include <pthread.h>
 #include <exception>
 namespace kabi{

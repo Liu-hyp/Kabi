@@ -1,5 +1,5 @@
-#ifndef KABI_INCLUDE_RUNTIME_H
-#define KABI_INCLUDE_RUNTIME_H
+#ifndef KABI_KABISRC_INCLUDE_RUNTIME_H
+#define KABI_KABISRC_INCLUDE_RUNTIME_H
 #include <string>
 namespace kabi
 {

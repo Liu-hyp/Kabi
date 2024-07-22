@@ -1,5 +1,5 @@
-#ifndef KABI_NET_WAKEUP_FD_EVENT_H
-#define KABI_NET_WAKEUP_FD_EVENT_H
+#ifndef KABI_KABISRC_NET_WAKEUP_FD_EVENT_H
+#define KABI_KABISRC_NET_WAKEUP_FD_EVENT_H
 #include "fd_event.h"
 #include <unistd.h>
 namespace kabi

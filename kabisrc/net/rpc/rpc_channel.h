@@ -1,11 +1,13 @@
-#ifndef KABI_NET_RPC_RPC_CHANNEL_H
-#define KABI_NET_RPC_RPC_CHANNEL_H
+#ifndef KABI_KABISRC_NET_RPC_RPC_CHANNEL_H
+#define KABI_KABISRC_NET_RPC_RPC_CHANNEL_H
 
 #include <google/protobuf/service.h>
 #include <memory>
 #include "../tcp/net_addr.h"
 #include "../tcp/tcp_client.h"
 #include "../timer_event.h"
+#include "../game/GameMsg.pb.h"
+#include "../game/game_role.h"
 
 namespace kabi {
 
@@ -49,6 +51,7 @@ public:
     google::protobuf::Closure* getClosure();
 
     tcpClient* getTcpClient();
+    GameRole* getGameRole();
 
     timerEvent::s_ptr get_timer_event();
 private:
@@ -59,6 +62,7 @@ private:
     message_s_ptr m_response {nullptr};
     closure_s_ptr m_closure {nullptr};
     tcpClient::s_ptr m_client {nullptr};
+    GameRole::s_ptr m_player {nullptr};
     bool m_is_init {false};
     timerEvent::s_ptr m_timer_event{nullptr};
 

@@ -1,5 +1,5 @@
-#ifndef KABI_NET_TIMER_EVENT_H
-#define KABI_NET_TIMER_EVENT_H
+#ifndef KABI_KABISRC_NET_TIMER_EVENT_H
+#define KABI_KABISRC_NET_TIMER_EVENT_H
 #include <functional>
 #include <memory>
 namespace kabi{

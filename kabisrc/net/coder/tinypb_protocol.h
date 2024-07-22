@@ -1,5 +1,5 @@
-#ifndef KABI_NET_CODER_TINYPB_PROTOCOL_H
-#define KABI_NET_CODER_TINYPB_PROTOCOL_H
+#ifndef KABI_KABISRC_NET_CODER_TINYPB_PROTOCOL_H
+#define KABI_KABISRC_NET_CODER_TINYPB_PROTOCOL_H
 #include "abstract_protocol.h"
 #include <string>
 namespace kabi

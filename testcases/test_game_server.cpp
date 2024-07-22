@@ -3,33 +3,21 @@
 #include "../kabisrc/net/tcp/tcp_server.h"
 #include <memory>
 #include <google/protobuf/service.h>
-#include "order.pb.h"
 #include "../kabisrc/net/rpc/rpc_dispatcher.h"
-class OrderImpl : public Order{
+#include "../kabisrc/net/game/GameMsg.pb.h"
+
+class LoginImpl : public Login{
 public:
-    void makeOrder(google::protobuf::RpcController* controller,
-                       const ::makeOrderRequest* request,
-                       ::makeOrderResponse* response,
+void makeLogin(google::protobuf::RpcController* controller,
+                       const SyncPid* request,
+                       SyncPidResponse* response,
                        ::google::protobuf::Closure* done)
                        {
-                            //APPLOG只能在rpc方法里面用
-                            APPDEBUGLOG("start sleep 5s");
-                            sleep(5);
-                            APPDEBUGLOG("end sleep 5s");
-                            if(request->price() < 10)
-                            {
-                                response->set_ret_code(-1);
-                                response->set_res_info("short balance");
-                                return;
-                            }
-                            else
-                            {
-                                response->set_order_id("2024");
-                                APPDEBUGLOG("call makeOrder success");
-                            }
-
+                            //APPLOG只能在rpc方法里面用                           
+                            response->set_state(Status::OK);
+                            APPDEBUGLOG("call makeOrder success");
                        }
-    
+
 };
 void test_tcp_server()
 {
@@ -48,11 +36,10 @@ int main(int argc, char* argv[])
     //     return 0;
     // }
     std::string xmlfile = "/mnt/hgfs/Share/Kabi/conf/kabi.xml";
-    //kabi::config::set_global_config(argv[1]);
     kabi::config::set_global_config(xmlfile.c_str());
     kabi::logger::init_global_logger();
-    std::shared_ptr<OrderImpl> order_ptr = std::make_shared<OrderImpl>();
-    kabi::rpcDispatcher::get_rpc_dispatcher()->register_service(order_ptr);
+    std::shared_ptr<LoginImpl> login_ptr = std::make_shared<LoginImpl>();
+    kabi::rpcDispatcher::get_rpc_dispatcher()->register_service(login_ptr);
     kabi::ipNetAddr::s_ptr addr = std::make_shared<kabi::ipNetAddr>("192.168.247.128", kabi::config::get_global_config()->m_port);
     kabi::tcpServer tcp_server(addr);
     tcp_server.start();

@@ -1,5 +1,5 @@
-#ifndef KABI_NET_CODER_TINYPB_CODER_H
-#define KABI_NET_CODER_TINYPB_CODER_H
+#ifndef KABI_KABISRC_NET_CODER_TINYPB_CODER_H
+#define KABI_KABISRC_NET_CODER_TINYPB_CODER_H
 #include "abstract_coder.h"
 #include "tinypb_protocol.h"
 namespace kabi

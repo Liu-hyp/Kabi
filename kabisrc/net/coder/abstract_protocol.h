@@ -1,5 +1,5 @@
-#ifndef KABI_NET_ABSTRACT_PROTOCOL_H
-#define KABI_NET_ABSTRACT_PROTOCOL_H
+#ifndef KABI_KABISRC_NET_ABSTRACT_PROTOCOL_H
+#define KABI_KABISRC_NET_ABSTRACT_PROTOCOL_H
 #include <memory>
 #include <string>
 #include "../tcp/tcpbuffer.h"

@@ -2,8 +2,9 @@
 #define KABI_KABISRC_GAME_GAME_ROLE_H
 #include <string>
 #include <memory>
-#include "../net/coder/tinypb_protocol.h"
+#include "../coder/tinypb_protocol.h"
 #include "AOI.h"
+
 namespace kabi
 {
 class UserData
@@ -23,15 +24,19 @@ public:
 class GameRole : public Irole, public Player
 {
 public:
-    GameRole();
+    typedef std::shared_ptr<GameRole> s_ptr;
+    GameRole(int fd, std::string username);
     virtual ~GameRole();
     virtual bool init() override;
     virtual UserData* proc_msg(UserData::s_ptr) override;
     virtual void fini() override;
     virtual int get_x() override;
     virtual int get_y() override;
-    virtual ~GameRole();
+    void create_id_name_login();
     tinyPBProtocol::s_ptr m_protocol {nullptr};
+    int m_fd;
+    std::string m_username;
+
 };
 }
 #endif

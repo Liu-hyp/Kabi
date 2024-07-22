@@ -1,5 +1,5 @@
-#ifndef KABI_NET_TIMER_H
-#define KABI_NET_TIMER_H
+#ifndef KABI_KABISRC_NET_TIMER_H
+#define KABI_KABISRC_NET_TIMER_H
 #include <map>
 #include "../include/mutex.h"
 #include "fd_event.h"

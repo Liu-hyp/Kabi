@@ -1,5 +1,5 @@
-#ifndef KABI_NET_ABSTRACT_CODER_H
-#define KABI_NET_ABSTRACT_CODER_H
+#ifndef KABI_KABISRC_NET_ABSTRACT_CODER_H
+#define KABI_KABISRC_NET_ABSTRACT_CODER_H
 #include "../tcp/tcpbuffer.h"
 #include "abstract_protocol.h"
 #include <vector>

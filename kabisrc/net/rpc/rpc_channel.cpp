@@ -16,6 +16,8 @@ namespace kabi
 rpcChannel::rpcChannel(netAddr::s_ptr peer_addr):m_peer_addr(peer_addr)
 {
     m_client = std::make_shared<tcpClient>(m_peer_addr);
+    m_player = std::make_shared<GameRole>(m_client->get_client_fd(), "小金毛");
+    
 }
 rpcChannel::~rpcChannel()
 {
@@ -156,6 +158,10 @@ google::protobuf::Closure* rpcChannel::getClosure()
 tcpClient* rpcChannel::getTcpClient()
 {
     return m_client.get();
+}
+GameRole* rpcChannel::getGameRole()
+{
+    return m_player.get();
 }
 timerEvent::s_ptr rpcChannel::get_timer_event()
 {

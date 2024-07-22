@@ -1,5 +1,5 @@
-#ifndef KABI_INCLUDE_LOG_H
-#define KABI_INCLUDE_LOG_H
+#ifndef KABI_KABISRC_INCLUDE_LOG_H
+#define KABI_KABISRC_INCLUDE_LOG_H
 
 #include <string>
 #include <iostream>

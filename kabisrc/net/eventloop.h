@@ -1,5 +1,5 @@
-#ifndef KABI_NET_EVENTLOOP_H
-#define KABI_NET_EVENTLOOP_H
+#ifndef KABI_KABISRC_NET_EVENTLOOP_H
+#define KABI_KABISRC_NET_EVENTLOOP_H
 #include <pthread.h>
 #include <set>
 #include <sys/socket.h>

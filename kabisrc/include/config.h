@@ -1,5 +1,5 @@
-#ifndef KABI_INCLUDE_CONFIG_H
-#define KABI_INCLUDE_CONFIG_H
+#ifndef KABI_KABISRC_INCLUDE_CONFIG_H
+#define KABI_KABISRC_INCLUDE_CONFIG_H
 #include <map>
 #include <string>
 #include <tinyxml/tinyxml.h>
@@ -23,4 +23,4 @@ public:
 
 };
 }
-#endif //KABI_INCLUDE_CONFIG_H
+#endif //KABI_KABISRC_INCLUDE_CONFIG_H
