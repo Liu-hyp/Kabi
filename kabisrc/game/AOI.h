@@ -10,7 +10,6 @@ class Player
 public:
     virtual int get_x() = 0;
     virtual int get_y() = 0;
-private:
     int x;
     int y;
 

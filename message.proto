@@ -1,0 +1,46 @@
+syntax = "proto3";
+package protocol;
+
+
+import "google/protobuf/descriptor.proto";
+
+// 定义消息ID的option
+extend google.protobuf.MessageOptions { MessageID MsgID = 50002; }
+
+
+// 消息ID枚举
+enum MessageID {
+    MSG_NONE = 0;
+    MSG_DISCONNECT_NOTIFY = 1000;
+    MSG_LOGIN_REQUEST = 1001;
+    MSG_LOGIN_REPLY = 1002;
+}
+
+// 下线通知
+message DisconnectNtf {
+    option (MsgID) = MSG_DISCONNECT_NOTIFY;
+    
+    int32 err_code = 1;     // 错误码
+    string reason = 2;      // 原因(重复登录或者被踢下线)
+}
+
+// 登录请求
+message LoginReq {
+  option (MsgID) = MSG_LOGIN_REQUEST;
+  
+  string user = 1;          // 账号
+  string token = 2;         // 令牌
+  int64 unix_time = 3;      // 时间戳
+  string language = 4;      // 区域和语言
+  string client_os = 5;     // iOS, Android, Web
+  string device_type = 6;   // Windows, Android, iOS
+  string app_version = 7;   // 客户端版本号
+}
+
+message LoginAck {
+  option (MsgID) = MSG_LOGIN_REPLY;
+  
+  int32 err_code = 1;       // 错误码
+  string access_token = 2;  // 访问令牌
+  int32 session = 3;        // 会话
+}
