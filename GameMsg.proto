@@ -72,6 +72,12 @@ message SyncPlayers
     //嵌套多个子消息类型Player的消息
     repeated Player ps=1;
 }
+message SyncPlayersResponse
+{
+    int32 ret_code = 1; //必须有的字段 业务错误码， 0代表成功
+    string res_info = 2; //业务错误信息
+    Status state = 3;
+}
 message Player
 {
     int32 Pid=1;
@@ -80,4 +86,8 @@ message Player
 service Login {
     rpc makeLogin(SyncPid) returns (SyncPidResponse);
   }
+
+service SyncSrdPlayer{
+    rpc makeSrdPlayer(SyncPlayers) returns (SyncPlayersResponse);
+}
 

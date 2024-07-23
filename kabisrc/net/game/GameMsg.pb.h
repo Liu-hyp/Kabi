@@ -49,7 +49,7 @@ struct TableStruct_GameMsg_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[8]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[9]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -77,6 +77,9 @@ extern SyncPid_ADefaultTypeInternal _SyncPid_A_default_instance_;
 class SyncPlayers;
 struct SyncPlayersDefaultTypeInternal;
 extern SyncPlayersDefaultTypeInternal _SyncPlayers_default_instance_;
+class SyncPlayersResponse;
+struct SyncPlayersResponseDefaultTypeInternal;
+extern SyncPlayersResponseDefaultTypeInternal _SyncPlayersResponse_default_instance_;
 class Talk;
 struct TalkDefaultTypeInternal;
 extern TalkDefaultTypeInternal _Talk_default_instance_;
@@ -88,6 +91,7 @@ template<> ::SyncPid* Arena::CreateMaybeMessage<::SyncPid>(Arena*);
 template<> ::SyncPidResponse* Arena::CreateMaybeMessage<::SyncPidResponse>(Arena*);
 template<> ::SyncPid_A* Arena::CreateMaybeMessage<::SyncPid_A>(Arena*);
 template<> ::SyncPlayers* Arena::CreateMaybeMessage<::SyncPlayers>(Arena*);
+template<> ::SyncPlayersResponse* Arena::CreateMaybeMessage<::SyncPlayersResponse>(Arena*);
 template<> ::Talk* Arena::CreateMaybeMessage<::Talk>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 
@@ -1365,6 +1369,179 @@ class SyncPlayers final :
 };
 // -------------------------------------------------------------------
 
+class SyncPlayersResponse final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:SyncPlayersResponse) */ {
+ public:
+  inline SyncPlayersResponse() : SyncPlayersResponse(nullptr) {}
+  ~SyncPlayersResponse() override;
+  explicit constexpr SyncPlayersResponse(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  SyncPlayersResponse(const SyncPlayersResponse& from);
+  SyncPlayersResponse(SyncPlayersResponse&& from) noexcept
+    : SyncPlayersResponse() {
+    *this = ::std::move(from);
+  }
+
+  inline SyncPlayersResponse& operator=(const SyncPlayersResponse& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline SyncPlayersResponse& operator=(SyncPlayersResponse&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const SyncPlayersResponse& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const SyncPlayersResponse* internal_default_instance() {
+    return reinterpret_cast<const SyncPlayersResponse*>(
+               &_SyncPlayersResponse_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    7;
+
+  friend void swap(SyncPlayersResponse& a, SyncPlayersResponse& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(SyncPlayersResponse* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(SyncPlayersResponse* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  SyncPlayersResponse* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<SyncPlayersResponse>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const SyncPlayersResponse& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom(const SyncPlayersResponse& from);
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to, const ::PROTOBUF_NAMESPACE_ID::Message& from);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(SyncPlayersResponse* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "SyncPlayersResponse";
+  }
+  protected:
+  explicit SyncPlayersResponse(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kResInfoFieldNumber = 2,
+    kRetCodeFieldNumber = 1,
+    kStateFieldNumber = 3,
+  };
+  // string res_info = 2;
+  void clear_res_info();
+  const std::string& res_info() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_res_info(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_res_info();
+  PROTOBUF_NODISCARD std::string* release_res_info();
+  void set_allocated_res_info(std::string* res_info);
+  private:
+  const std::string& _internal_res_info() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_res_info(const std::string& value);
+  std::string* _internal_mutable_res_info();
+  public:
+
+  // int32 ret_code = 1;
+  void clear_ret_code();
+  int32_t ret_code() const;
+  void set_ret_code(int32_t value);
+  private:
+  int32_t _internal_ret_code() const;
+  void _internal_set_ret_code(int32_t value);
+  public:
+
+  // .Status state = 3;
+  void clear_state();
+  ::Status state() const;
+  void set_state(::Status value);
+  private:
+  ::Status _internal_state() const;
+  void _internal_set_state(::Status value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:SyncPlayersResponse)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr res_info_;
+  int32_t ret_code_;
+  int state_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_GameMsg_2eproto;
+};
+// -------------------------------------------------------------------
+
 class Player final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Player) */ {
  public:
@@ -1413,7 +1590,7 @@ class Player final :
                &_Player_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    8;
 
   friend void swap(Player& a, Player& b) {
     a.Swap(&b);
@@ -1585,6 +1762,65 @@ class Login_Stub : public Login {
   ::PROTOBUF_NAMESPACE_ID::RpcChannel* channel_;
   bool owns_channel_;
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(Login_Stub);
+};
+
+
+// -------------------------------------------------------------------
+
+class SyncSrdPlayer_Stub;
+
+class SyncSrdPlayer : public ::PROTOBUF_NAMESPACE_ID::Service {
+ protected:
+  // This class should be treated as an abstract interface.
+  inline SyncSrdPlayer() {};
+ public:
+  virtual ~SyncSrdPlayer();
+
+  typedef SyncSrdPlayer_Stub Stub;
+
+  static const ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor* descriptor();
+
+  virtual void makeSrdPlayer(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::SyncPlayers* request,
+                       ::SyncPlayersResponse* response,
+                       ::google::protobuf::Closure* done);
+
+  // implements Service ----------------------------------------------
+
+  const ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor* GetDescriptor();
+  void CallMethod(const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor* method,
+                  ::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                  const ::PROTOBUF_NAMESPACE_ID::Message* request,
+                  ::PROTOBUF_NAMESPACE_ID::Message* response,
+                  ::google::protobuf::Closure* done);
+  const ::PROTOBUF_NAMESPACE_ID::Message& GetRequestPrototype(
+    const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor* method) const;
+  const ::PROTOBUF_NAMESPACE_ID::Message& GetResponsePrototype(
+    const ::PROTOBUF_NAMESPACE_ID::MethodDescriptor* method) const;
+
+ private:
+  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(SyncSrdPlayer);
+};
+
+class SyncSrdPlayer_Stub : public SyncSrdPlayer {
+ public:
+  SyncSrdPlayer_Stub(::PROTOBUF_NAMESPACE_ID::RpcChannel* channel);
+  SyncSrdPlayer_Stub(::PROTOBUF_NAMESPACE_ID::RpcChannel* channel,
+                   ::PROTOBUF_NAMESPACE_ID::Service::ChannelOwnership ownership);
+  ~SyncSrdPlayer_Stub();
+
+  inline ::PROTOBUF_NAMESPACE_ID::RpcChannel* channel() { return channel_; }
+
+  // implements SyncSrdPlayer ------------------------------------------
+
+  void makeSrdPlayer(::PROTOBUF_NAMESPACE_ID::RpcController* controller,
+                       const ::SyncPlayers* request,
+                       ::SyncPlayersResponse* response,
+                       ::google::protobuf::Closure* done);
+ private:
+  ::PROTOBUF_NAMESPACE_ID::RpcChannel* channel_;
+  bool owns_channel_;
+  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(SyncSrdPlayer_Stub);
 };
 
 
@@ -2276,6 +2512,101 @@ SyncPlayers::ps() const {
 
 // -------------------------------------------------------------------
 
+// SyncPlayersResponse
+
+// int32 ret_code = 1;
+inline void SyncPlayersResponse::clear_ret_code() {
+  ret_code_ = 0;
+}
+inline int32_t SyncPlayersResponse::_internal_ret_code() const {
+  return ret_code_;
+}
+inline int32_t SyncPlayersResponse::ret_code() const {
+  // @@protoc_insertion_point(field_get:SyncPlayersResponse.ret_code)
+  return _internal_ret_code();
+}
+inline void SyncPlayersResponse::_internal_set_ret_code(int32_t value) {
+  
+  ret_code_ = value;
+}
+inline void SyncPlayersResponse::set_ret_code(int32_t value) {
+  _internal_set_ret_code(value);
+  // @@protoc_insertion_point(field_set:SyncPlayersResponse.ret_code)
+}
+
+// string res_info = 2;
+inline void SyncPlayersResponse::clear_res_info() {
+  res_info_.ClearToEmpty();
+}
+inline const std::string& SyncPlayersResponse::res_info() const {
+  // @@protoc_insertion_point(field_get:SyncPlayersResponse.res_info)
+  return _internal_res_info();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void SyncPlayersResponse::set_res_info(ArgT0&& arg0, ArgT... args) {
+ 
+ res_info_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:SyncPlayersResponse.res_info)
+}
+inline std::string* SyncPlayersResponse::mutable_res_info() {
+  std::string* _s = _internal_mutable_res_info();
+  // @@protoc_insertion_point(field_mutable:SyncPlayersResponse.res_info)
+  return _s;
+}
+inline const std::string& SyncPlayersResponse::_internal_res_info() const {
+  return res_info_.Get();
+}
+inline void SyncPlayersResponse::_internal_set_res_info(const std::string& value) {
+  
+  res_info_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* SyncPlayersResponse::_internal_mutable_res_info() {
+  
+  return res_info_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* SyncPlayersResponse::release_res_info() {
+  // @@protoc_insertion_point(field_release:SyncPlayersResponse.res_info)
+  return res_info_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void SyncPlayersResponse::set_allocated_res_info(std::string* res_info) {
+  if (res_info != nullptr) {
+    
+  } else {
+    
+  }
+  res_info_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), res_info,
+      GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (res_info_.IsDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited())) {
+    res_info_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), "", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:SyncPlayersResponse.res_info)
+}
+
+// .Status state = 3;
+inline void SyncPlayersResponse::clear_state() {
+  state_ = 0;
+}
+inline ::Status SyncPlayersResponse::_internal_state() const {
+  return static_cast< ::Status >(state_);
+}
+inline ::Status SyncPlayersResponse::state() const {
+  // @@protoc_insertion_point(field_get:SyncPlayersResponse.state)
+  return _internal_state();
+}
+inline void SyncPlayersResponse::_internal_set_state(::Status value) {
+  
+  state_ = value;
+}
+inline void SyncPlayersResponse::set_state(::Status value) {
+  _internal_set_state(value);
+  // @@protoc_insertion_point(field_set:SyncPlayersResponse.state)
+}
+
+// -------------------------------------------------------------------
+
 // Player
 
 // int32 Pid = 1;
@@ -2391,6 +2722,8 @@ inline void Player::set_allocated_p(::Position* p) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -15,10 +15,24 @@ void makeLogin(google::protobuf::RpcController* controller,
                        {
                             //APPLOG只能在rpc方法里面用                           
                             response->set_state(Status::OK);
-                            APPDEBUGLOG("call makeOrder success");
+                            APPDEBUGLOG("call makeLogin success");
                        }
 
 };
+class SyncSrdPlayerImpl : public SyncSrdPlayer{
+void makeSrdPlayer(google::protobuf::RpcController* controller,
+                       const SyncPlayers* request,
+                       SyncPlayersResponse* response,
+                       ::google::protobuf::Closure* done)
+                       {
+                            //APPLOG只能在rpc方法里面用                           
+                            response->set_state(Status::OK);
+                            APPDEBUGLOG("call makeSrdPlayer success");
+                       }
+
+};
+
+
 void test_tcp_server()
 {
     kabi::ipNetAddr::s_ptr addr = std::make_shared<kabi::ipNetAddr>("192.168.247.128", 8080);
@@ -38,8 +52,10 @@ int main(int argc, char* argv[])
     std::string xmlfile = "/mnt/hgfs/Share/Kabi/conf/kabi.xml";
     kabi::config::set_global_config(xmlfile.c_str());
     kabi::logger::init_global_logger();
-    std::shared_ptr<LoginImpl> login_ptr = std::make_shared<LoginImpl>();
-    kabi::rpcDispatcher::get_rpc_dispatcher()->register_service(login_ptr);
+    //std::shared_ptr<LoginImpl> login_ptr = std::make_shared<LoginImpl>();
+    //kabi::rpcDispatcher::get_rpc_dispatcher()->register_service(login_ptr);
+    std::shared_ptr<SyncSrdPlayerImpl> sync_ptr = std::make_shared<SyncSrdPlayerImpl>();
+    kabi::rpcDispatcher::get_rpc_dispatcher()->register_service(sync_ptr);
     kabi::ipNetAddr::s_ptr addr = std::make_shared<kabi::ipNetAddr>("192.168.247.128", kabi::config::get_global_config()->m_port);
     kabi::tcpServer tcp_server(addr);
     tcp_server.start();

@@ -16,7 +16,7 @@ namespace kabi
 rpcChannel::rpcChannel(netAddr::s_ptr peer_addr):m_peer_addr(peer_addr)
 {
     m_client = std::make_shared<tcpClient>(m_peer_addr);
-    m_player = std::make_shared<GameRole>(m_client->get_client_fd(), "小金毛");
+    m_player = std::make_shared<GameRole>(m_client->get_client_fd(), "卡比", 60, 107, 0, 0);
     
 }
 rpcChannel::~rpcChannel()

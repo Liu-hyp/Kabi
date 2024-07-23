@@ -11,3 +11,4 @@ void initProtoRegistryV2();
 uint32_t getMessageID(google::protobuf::Message*);
 google::protobuf::Message* createMessageV2(protocol::MessageID msgId);
 
+
